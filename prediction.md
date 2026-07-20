@@ -2,8 +2,8 @@
 
 Committed **before any v2 code was written or run**, including before the calibration sweep and
 before the stimulus screening gate. Supersedes the pre-registration of the v1 run
-(`workspace-stickiness-test/prediction.md`, 2026-07-13), which remains frozen as the record of that
-run and is not edited.
+([`j-lens-trait-persistence-test/prediction.md`](https://github.com/manu-scriptum/j-lens-trait-persistence-test/blob/master/prediction.md),
+2026-07-13), which remains frozen as the record of that run and is not edited.
 
 Design authority for this document is `trait-persistence-v2-spec.md` (in this repo). Where this
 document is more specific than the spec — exact numeric criteria, exact stimuli, exact lexicons —

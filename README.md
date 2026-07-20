@@ -12,8 +12,9 @@ Measured with the **Jacobian lens** on `google/gemma-3-4b-it`.
 > (calibration + screening) runs in Colab; Phase 2 (main sweep + ablation) is written once Phase 1's
 > outputs come back.
 
-This supersedes [`workspace-stickiness-test`](../workspace-stickiness-test) (v1, run 2026-07-13),
-which stays frozen as the record of that run. The design authority for v2 is
+This supersedes
+[`j-lens-trait-persistence-test`](https://github.com/manu-scriptum/j-lens-trait-persistence-test)
+(v1, run 2026-07-13), which stays frozen as the record of that run. The design authority for v2 is
 [`trait-persistence-v2-spec.md`](trait-persistence-v2-spec.md).
 
 ## Why there is a v2
