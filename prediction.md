@@ -5,7 +5,7 @@ before the stimulus screening gate. Supersedes the pre-registration of the v1 ru
 ([`j-lens-trait-persistence-test/prediction.md`](https://github.com/manu-scriptum/j-lens-trait-persistence-test/blob/master/prediction.md),
 2026-07-13), which remains frozen as the record of that run and is not edited.
 
-Design authority for this document is `trait_recall_v2_spec.md` (in this repo). Where this
+Design authority for this document is `trait_persistence_v2_spec.md` (in this repo). Where this
 document is more specific than the spec — exact numeric criteria, exact stimuli, exact lexicons —
 this document governs, and the spec's own instruction is that these be pinned in advance:
 
@@ -64,7 +64,7 @@ future run" section, before the v2 spec existed:
 > step, **not the immediate next run** … **Primary next run = cued retrieval + interference + this
 > fragility read; the KV-ablation is the eventual causal confirmation, elsewhere.**
 
-`trait_recall_v2_spec.md` promoted that deferred item to its primary novel result (Q3/D5). Its
+`trait_persistence_v2_spec.md` promoted that deferred item to its primary novel result (Q3/D5). Its
 author was working from the source paper and v1's `results.md` only, and had not seen v1's
 `prediction.md`, where the deferral was recorded. The promotion was therefore made without knowledge
 of the prior feasibility judgement, not against it.
@@ -253,7 +253,7 @@ Each character has three arms:
   differed from its inferred triggers in topic as well as in trait content; that confound is what this
   matching removes.
 
-Exact stimulus text, lexicons, and tracers are declared in `trait_recall_v2_stimuli.py` in this repo, committed in
+Exact stimulus text, lexicons, and tracers are declared in `trait_persistence_v2_stimuli.py` in this repo, committed in
 the same commit as this document. They are part of the pre-registration; the file is the canonical
 copy to avoid transcription drift between doc and code.
 
@@ -269,7 +269,7 @@ measure and analysed on the secondary measure only.
 comparable frequency to the trait word, with no semantic relation to the trait, the character, the
 occupation, or the filler — e.g. "Maria is generous, she thinks, setting down the **lantern**." The
 tracer is tracked against its own control-arm floor with the identical machinery. Tracers are declared
-in `trait_recall_v2_stimuli.py` alongside the lexicons.
+in `trait_persistence_v2_stimuli.py` alongside the lexicons.
 
 ## 7. Cues and checkpoints (D2)
 
@@ -354,7 +354,7 @@ no main sweep. This is a revision of an untested pre-registration, not a post-ho
 therefore costs nothing epistemically. It is logged here anyway, because the value of the log is that
 it is complete.
 
-**Origin.** `trait_recall_v2_spec.md` was written from the source paper and v1's `results.md`
+**Origin.** `trait_persistence_v2_spec.md` was written from the source paper and v1's `results.md`
 only. Its author had not seen v1's `prediction.md`, v1's notebook, `stimuli.csv`, or a design decision
 tree compiled 2026-07-14 that had marked several decisions *locked*. Two locked decisions were absent
 from the spec — not rejected, never seen. Both were put back to the spec's author for a ruling, and
@@ -393,7 +393,7 @@ tree travels with the results doc in any future handoff.
 v1's `prediction.md` was read in full for the first time and found to contain a **"Design spec for a
 future run"** section (lines 360–483) that neither the v2 spec's author nor this pre-registration had
 seen. It records a prior feasibility judgement deferring the KV-ablation out of the read-only lab and
-naming "cued retrieval + interference + fragility read" as the primary next run. `trait_recall_v2_spec.md`
+naming "cued retrieval + interference + fragility read" as the primary next run. `trait_persistence_v2_spec.md`
 had promoted that deferred item to its primary novel result without knowledge of the deferral.
 
 - **Q3 deferred** (§1a). Requires intervention scaffolding and its own validation; not available.
@@ -431,5 +431,5 @@ an intervention, **within reach of this lab**. That is the natural next run, and
    a family member's, and no experimental property depends on the choice. She/her, occupation, tracer,
    and both behavioural sentences are unchanged apart from the name token.
 
-`trait_recall_v2_stimuli.py` self-checks still pass; no trait word leaks into any inferred/control arm; every tracer
+`trait_persistence_v2_stimuli.py` self-checks still pass; no trait word leaks into any inferred/control arm; every tracer
 is present in its direct trigger.
