@@ -64,6 +64,12 @@ a retrieval cue to a byte-identical prefix:
 Primary measure: **best rank across the trait's concept lexicon, median over the calibrated band**,
 always as a ratio against the control arm at the same distance and cue.
 
+Every read is also computed with a plain **logit lens** as a registered robustness stream that gates
+no conclusion. It answers the question of whether the J-lens is load-bearing: if a plain unembedding
+readout shows the same effect, the finding is not instrument-specific. A logit-lens *null* is only
+interpretable where the logit lens passed a per-character positive control at d0 — otherwise it can't
+be told apart from an instrument that simply can't see at these depths.
+
 ## Files
 
 - [`prediction.md`](prediction.md) — the pre-registration. **Read this first.** All numeric criteria
@@ -90,10 +96,17 @@ table** (which characters passed, and whether the valence balance survived).
 ## Known open risk
 
 The Q3 KV-ablation needs attention masking over a token span. Whether the public `jlens` API exposes
-this is **not yet verified** — if it does not, Phase 2 will drive it with forward hooks on the
-underlying HF model. Flagged here rather than discovered at implementation time. The spec's own
-guard applies: verify on one example that the mask actually removes the scene (the model can no
-longer answer "what did NAME do?") *before* trusting any trait measurement taken under it.
+this is **not yet verified** — if it does not, Phase 2 will drive it with forward pre-hooks on the HF
+attention modules, setting attention logits to −inf toward the scene-token span. V-zeroing is not an
+accepted silent substitute: zeroed values still let attention mass land on the span, changing the
+softmax denominator differently than masking does.
+
+The verification guard is now a **registered gate** (`prediction.md` §7b), not advice. D5 is
+reportable only if the mask demonstrably removes the scene — the model can no longer answer "what did
+NAME do?" under scene ablation, and still can under the control ablation. If the gate fails, D5 is
+reported as **not-run, never as a null**. A failed mask produces a null that looks exactly like Q3
+outcome (b), which is the more surprising of the two findings; without the gate, a bug could
+manufacture a result.
 
 ## Scope and honesty
 

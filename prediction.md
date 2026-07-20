@@ -135,6 +135,11 @@ screening step. If these thresholds prove badly miscalibrated for this model —
 or all candidates — that is itself reported, and any revision is an amendment in §9 with the screening
 data shown.
 
+**Failure rule (added 2026-07-20, pre-data).** If fewer than **5** candidates pass screening, the run
+**halts**. Thresholds are then revised in a dated §9 amendment, with the screening table shown, before
+any Phase 2 data exists. The gate is not loosened mid-run to admit more characters. This keeps the
+gate honest in the failure case, which is the only case where loosening it would be tempting.
+
 **Why screening does not contaminate Q1.** The gate selects on **d0 inference strength**; Q1 is about
 **persistence at d ≥ 1 relative to control**. These are different quantities. To the extent they
 correlate, selecting high-d0 items biases the inferred arm *toward* regression to the mean at later
@@ -157,6 +162,26 @@ with respect to the prediction we would otherwise be accused of favouring.
 - First 5 tokens of every document are excluded from all aggregate statistics (high-norm token
   artifact).
 - Raw text throughout; no chat template.
+
+## 4a. Logit-lens robustness stream (added 2026-07-20, pre-data)
+
+Secondary, **gates no conclusion**. All primary readouts are additionally computed with the plain
+unembedding (logit lens) over the same band. Interpretation is fixed in advance and asymmetric:
+
+- (a) If the logit lens reproduces a J-lens effect, the effect is **not instrument-specific**.
+- (b) A logit-lens null is **uninterpretable** unless the logit lens passed its per-character
+  **positive control**, defined as detecting the d0 inferred-trigger signal: concept-lexicon best
+  rank ≤ 5× the J-lens value at the same checkpoint.
+- Where the positive control passes and a specific effect is still absent, we report *"visible to the
+  J-lens, not the logit lens"* as a **descriptive observation about instrument sensitivity**, not as
+  evidence about the model.
+
+That last clause is load-bearing. Even with the positive control passed, "J-lens sees it, logit lens
+doesn't" is a statement about the two lenses' relative sensitivity to this signal — **not** proof of a
+J-space-privileged representation. The source paper needed its whole structural section to earn that
+stronger reading; this experiment does not get to borrow it.
+
+No Q1–Q3 criterion in §3 references the logit lens. The J-lens is primary throughout.
 
 ## 5. Stimuli
 
@@ -203,7 +228,9 @@ pass** on (prefix + cue), so all differences are attributable to arm and cue.
 - **Cue A (entity cue, topic-free):** `"Tom glances at NAME."` — read at the tokens *following* the
   name. Note: this introduces a second name, Tom. It is identical across all arms and all distances,
   so it cancels in every arm-vs-control contrast, which are the only contrasts drawn. It is not used
-  for any absolute claim.
+  for any absolute claim. **Note (2026-07-20):** "Tom" is now *spent* as a neutral name. If Q4/D6 is
+  ever unstubbed, its second entity must use a different name, or the interference test would be run
+  against a name already present in every prefix.
 - **Cue B (trait query):** `"What kind of person is NAME? NAME is"` — read at the final position,
   where a trait adjective is contextually possible. This is the position v1's sentence-final periods
   made structurally impossible, and it carries the primary Q1 contrast.
@@ -211,6 +238,40 @@ pass** on (prefix + cue), so all differences are attributable to arm and cue.
   "spontaneous saliency" everywhere it appears. **It carries no persistence claim in v2.**
 - **Reintroduction (D3):** v1's bare-name reintroduction after the full filler, kept as a distinguished
   checkpoint (Cue A at maximum distance plus a continuation read).
+
+## 7a. Registered conditional extension (added 2026-07-20, pre-data)
+
+If, at d=10 under Cue B, the direct arm's median ratio-to-control across screened characters is
+**≤ 0.8** (retrievable, no approach to floor) **AND** the direct-vs-inferred ratio contrast at d=10 is
+smaller than at d=4 by **less than 20%** (no separation trend has emerged), extend the sweep to
+d ∈ {15, 20, 30}, identical cues and measures, as a **registered secondary analysis**. The extension
+is triggered by **lack of dynamic range, not by any substantive result**, and its findings carry the
+same status as the primary sweep.
+
+The trigger is deliberately two-part: extend only if the direct arm is *both* still comfortably
+retrievable *and* the contrast has not already opened up. If separation is visible by d=10, the
+question is answered and the extension is decoration.
+
+**Override.** If Q2 returns outcome (b) — the tracer persists comparably, i.e. copy bias — the
+extension does **not** run, regardless of trigger. The quantity whose range would be extended is then
+contaminated, and extending it would mean measuring the decay curve of a repetition artifact.
+
+The unconditional "find the verbatim half-life" version is explicitly **not** registered. That
+question was posed about a *passive-read* quantity, and passive reads carry no persistence claims in
+v2 (§7). Chasing its half-life would spend forward passes on Q2's null hypothesis.
+
+## 7b. D5 implementation gate (added 2026-07-20, pre-data)
+
+- **Preferred mechanism:** forward pre-hooks on the HF attention modules setting attention logits to
+  **−inf** toward the scene-token span, at every layer and head.
+- **V-zeroing is not an accepted silent substitute.** Zeroed values still let attention mass land on
+  the span, changing the softmax denominator differently than masking does. If V-zeroing is used, it
+  is **recorded as a deviation** in the results doc.
+- **Registered gate:** D5 results are reportable **only if the mask check passes** — under scene
+  ablation the model can no longer answer "what did NAME do?", and under the matched control ablation
+  it still can. **If the gate fails, D5 is reported as not-run, never as a null.** A failed mask
+  produces a null that looks exactly like Q3 outcome (b), and reporting it as such would manufacture
+  the more surprising of the two findings out of a bug.
 
 ## 8. Analysis constraints, fixed in advance
 
@@ -230,6 +291,45 @@ pass** on (prefix + cue), so all differences are attributable to arm and cue.
 
 ## 9. Amendments
 
-None. Amendments are appended here with a date, the reason, and the data visible at the time of the
-change. Superseded lines above are marked inline, never deleted — same discipline that made v1's
-correction possible.
+Amendments are appended here with a date, the reason, and the data visible at the time of the change.
+Superseded lines above are marked inline, never deleted — same discipline that made v1's correction
+possible.
+
+### 2026-07-20 — pre-data revision (spec review)
+
+**Data visible at the time: none.** Nothing had been run — no calibration sweep, no screening reads,
+no main sweep. This is a revision of an untested pre-registration, not a post-hoc amendment, and it
+therefore costs nothing epistemically. It is logged here anyway, because the value of the log is that
+it is complete.
+
+**Origin.** `trait-persistence-v2-spec.md` was written from the source paper and v1's `results.md`
+only. Its author had not seen v1's `prediction.md`, v1's notebook, `stimuli.csv`, or a design decision
+tree compiled 2026-07-14 that had marked several decisions *locked*. Two locked decisions were absent
+from the spec — not rejected, never seen. Both were put back to the spec's author for a ruling, and
+these are the rulings.
+
+1. **§4a added — logit-lens robustness stream.** Restores a locked 07-14 decision. The skeptic's
+   question, "is the fancy lens load-bearing?", deserves a registered answer, and it is
+   computationally free. The d0 positive control is the review's addition and is what makes a
+   logit-lens null interpretable at all; the original framing had no way to distinguish "the model
+   doesn't represent it" from "this lens can't see at these depths."
+2. **§7a added — registered conditional extension past d=10.** The unconditional 07-14 version
+   ("find the verbatim half-life") stays **rejected**: it targets a passive-read quantity that Q2 may
+   reclassify as copy bias. The dynamic-range concern for the *cued* measure is real, so the
+   extension is registered as conditional, with a two-part trigger and a Q2 override.
+3. **§7b added — D5 implementation gate.** The spec's verification guard is elevated from advice to a
+   registered gate, and the masking mechanism is pinned. Rationale: a failed mask yields a null
+   indistinguishable from Q3 outcome (b), which is the more surprising finding — so a bug could
+   manufacture a result.
+4. **§3 failure rule added.** Fewer than 5 screening survivors halts the run rather than loosening a
+   pre-registered gate.
+5. **§7 note added.** "Tom" is spent as a neutral name; D6 needs a different one if unstubbed.
+
+**Deviations from the spec, reviewed and approved in the same pass:** screening thresholds frozen
+rather than tuned on the first two characters (the spec's tuning window was a researcher degree of
+freedom; closing it was accepted as an improvement); 10 pre-declared candidates rather than 8;
+Q4/D6 stubbed; Cue A's "Tom" retained verbatim.
+
+**Process note for future runs.** Spec-writing from results-plus-paper reproduces the *analysis* but
+cannot reproduce *decisions*, because decisions are not derivable from the flaws. The design decision
+tree travels with the results doc in any future handoff.
