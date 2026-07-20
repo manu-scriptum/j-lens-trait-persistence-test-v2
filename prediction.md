@@ -412,3 +412,24 @@ copy-bias control (Q2) and a free instrument check (Q5). It is not the held-conc
 held-concept question needs either the KV-ablation (proper lab) or v1's Redesign 3 direction probe —
 which v1's spec judged *cleaner than the ablation* for that question and, being a readout rather than
 an intervention, **within reach of this lab**. That is the natural next run, and it is not this one.
+
+### 2026-07-20 (later same day) — direct-trigger phrasing and one name
+
+**Data visible at the time: none.** Two stimulus edits, both pre-data.
+
+1. **Direct-trigger phrasing.** The spec's D4 example embedded the tracer as
+   `"Maria is generous, she thinks, setting down the lantern."` That construction has two defects a
+   human reader flagged: the speaker of "she thinks" is ambiguous (the character about herself, or an
+   unnamed onlooker?), and — more consequential — "she thinks" reframes the trait from a *stated fact*
+   into a *reported opinion*, weakening the very manipulation the `direct` arm exists to make. All ten
+   direct triggers are rephrased to state the trait as a clean sentence, then carry the tracer in a
+   separate neutral action clause: `"<Name> is <trait>. <Subj> sets the <tracer> down and heads home."`
+   D4's requirements are unchanged — the tracer is still a pre-declared neutral content word resident
+   only in the direct trigger, tracked against its control-arm floor. "heads home" is trait-neutral for
+   every character. This is a strict improvement to construct validity, not a design change.
+2. **One character renamed** Hanna → **Greta** (dishonest arm). Non-scientific: the prior name matched
+   a family member's, and no experimental property depends on the choice. She/her, occupation, tracer,
+   and both behavioural sentences are unchanged apart from the name token.
+
+`stimuli_v2.py` self-checks still pass; no trait word leaks into any inferred/control arm; every tracer
+is present in its direct trigger.
