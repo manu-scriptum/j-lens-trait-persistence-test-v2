@@ -1,2 +1,6 @@
 # Local-only working notes, kept out of the repo
 reading-list.html
+
+# Python bytecode
+__pycache__/
+*.pyc

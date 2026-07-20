@@ -15,7 +15,7 @@ Measured with the **Jacobian lens** on `google/gemma-3-4b-it`.
 This supersedes
 [`j-lens-trait-persistence-test`](https://github.com/manu-scriptum/j-lens-trait-persistence-test)
 (v1, run 2026-07-13), which stays frozen as the record of that run. The design authority for v2 is
-[`trait-persistence-v2-spec.md`](trait-persistence-v2-spec.md).
+[`trait_recall_v2_spec.md`](trait_recall_v2_spec.md).
 
 ## Why there is a v2
 
@@ -86,9 +86,9 @@ be told apart from an instrument that simply can't see at these depths.
 
 - [`prediction.md`](prediction.md) — the pre-registration. **Read this first.** All numeric criteria
   are pinned there, including the screening thresholds, which were frozen rather than tuned.
-- [`stimuli_v2.py`](stimuli_v2.py) — canonical stimuli, lexicons, tracers, cues. Part of the
+- [`trait_recall_v2_stimuli.py`](trait_recall_v2_stimuli.py) — canonical stimuli, lexicons, tracers, cues. Part of the
   pre-registration, not implementation; the notebook imports it rather than restating any string.
-- [`trait-persistence-v2-spec.md`](trait-persistence-v2-spec.md) — the design spec.
+- [`trait_recall_v2_spec.md`](trait_recall_v2_spec.md) — the design spec.
 - [`trait_recall_v2_phase1.ipynb`](trait_recall_v2_phase1.ipynb) — Phase 1: calibration + screening.
 
 ## Running Phase 1
@@ -96,7 +96,7 @@ be told apart from an instrument that simply can't see at these depths.
 Runs on a Colab **T4 GPU**; no local GPU needed.
 
 1. Open `trait_recall_v2_phase1.ipynb` in Colab; `Runtime → Change runtime type → T4 GPU`.
-2. Upload `stimuli_v2.py` alongside it (folder icon, left sidebar), or clone this repo.
+2. Upload `trait_recall_v2_stimuli.py` alongside it (folder icon, left sidebar), or clone this repo.
 3. `google/gemma-3-4b-it` is gated: accept the license on Hugging Face, then add your token as a
    Colab secret named `HF_token` (key icon; enable notebook access).
 4. Run top to bottom, then download every file listed in the final cell.
