@@ -43,14 +43,43 @@ move once data exists.
 - **Q1 (primary).** Under cued retrieval, does a stated trait remain more retrievable than an
   inferred trait across intervening text?
 - **Q2 (primary).** Is direct-arm persistence trait-specific, or generic token-echo?
-- **Q3 (primary).** Is an inferred trait, when retrievable at re-mention, a **held latent** (a trait
-  representation stored independently of the scene tokens) or a **held scene** (nothing trait-specific
-  stored; the trait is re-derived from cached behaviour tokens on demand)?
+- **Q3 — DEFERRED, not run in this pass (see §1a).** Is an inferred trait, when retrievable at
+  re-mention, a **held latent** or a **held scene**?
 - **Q4 (secondary, cuttable).** Does an inferred trait stay bound to the correct entity when a second,
-  trait-neutral entity is present?
+  trait-neutral entity is present? **Not run in this pass**; built as a documented stub.
+- **Q5 (secondary, free).** Does the J-lens read content the logit lens cannot — specifically, does it
+  surface the *inferred* (never-tokenised) trait where a plain unembedding readout surfaces only the
+  *stated* one? An instrument-discriminant question, added 2026-07-20. See §4a.
 
-Q4 will not be run in the first pass. It is built as a documented stub. The spec's instruction —
-"do not let Q4 endanger Q1–Q3" — is followed literally.
+## 1a. Why Q3 is deferred (added 2026-07-20, pre-data)
+
+Q3's KV-ablation requires attention/KV-patching scaffolding and its own validation — proving the
+ablation removed the intended trace rather than simply breaking the model. That is an *intervention*,
+not a readout, and it is out of reach of a Colab-T4 read-only lens rig.
+
+This is not a new judgement. v1's own `prediction.md` reached it first, in its "Design spec for a
+future run" section, before the v2 spec existed:
+
+> the ablation is out of the read-only lab … park the causal ablation as a proper-lab / agentic-run
+> step, **not the immediate next run** … **Primary next run = cued retrieval + interference + this
+> fragility read; the KV-ablation is the eventual causal confirmation, elsewhere.**
+
+`trait-persistence-v2-spec.md` promoted that deferred item to its primary novel result (Q3/D5). Its
+author was working from the source paper and v1's `results.md` only, and had not seen v1's
+`prediction.md`, where the deferral was recorded. The promotion was therefore made without knowledge
+of the prior feasibility judgement, not against it.
+
+**This run is the corrected replication: Q1 + Q2, plus the free Q5 discriminant.** That is what v1's
+spec called the primary next run, and it is worth doing on its own terms — v1 could measure cued
+retrievability at exactly one accidental checkpoint.
+
+**What survives of Q3 here.** v1's spec proposed an observational shadow, *differential fragility*:
+stress both arms with reads only and see which retrieval mode breaks first. Its distance half **is
+already Q1** — cued retrieval across d ∈ {0,1,2,4,7,10} measures precisely whether the inferred arm
+craters faster than the stated arm as distance accumulates. Its interference half needs Q4 and is not
+run. So Q1 delivers a partial fragility read; it is correlational, motivates the ablation rather than
+replacing it, and **no held-latent-vs-held-scene claim may be drawn from it**. §7b's ablation gate
+stays registered for whenever Q3 becomes runnable.
 
 ## 2. Predictions
 
@@ -71,7 +100,19 @@ strong enough to register. Every outcome below is reportable and none is a "win"
   copy/repetition bias. Q1 then rests entirely on the cued reads, which is what they exist for. This
   outcome does not invalidate v2; it invalidates a specific reading of v1.
 
-**Q3 — three outcomes:**
+**Q5 — instrument discriminant, two outcomes.** Read as the `{direct, inferred} × {logit, J-lens}`
+contrast, wording carried over from v1's follow-up spec:
+- (a) The logit lens surfaces the *stated* trait but not the *inferred* one, while the J-lens surfaces
+  both → the J-lens is doing its claimed job of reading unexpressed latent content. This is the
+  strongest available justification for using it on this task.
+- (b) All lenses agree → the J-lens buys nothing here, and the finding is instrument-independent
+  (which is good for the finding and bad for the instrument's claimed advantage).
+
+Caveat fixed in advance: both are vocabulary-projection transports, so this is a readout-robustness
+and discriminant check, **not** a representation probe. It cannot see a held-but-unexpressed concept.
+Q5 gates no Q1/Q2 conclusion.
+
+**Q3 — DEFERRED; outcomes retained for whenever it is runnable:**
 - (a) Inferred-arm retrieval survives behaviour-KV ablation above the level of the matched control
   ablation → a trait latent exists outside the scene tokens (**held latent**).
 - (b) Retrieval collapses under scene ablation but not under control ablation → **held scene**;
@@ -80,7 +121,10 @@ strong enough to register. Every outcome below is reportable and none is a "win"
   reported as such and not spun.
 
 Q3(a) and Q3(b) are both publishable and roughly equally interesting. That is the property that makes
-this experiment worth running, and it is protected by writing it down here.
+this experiment worth running, and it is protected by writing it down here. **[Superseded 2026-07-20
+— Q3 is deferred (§1a); it is not run in this pass. The statement stays true of Q3 whenever it
+becomes runnable, but it is no longer what makes *this* run worth doing. This run is the corrected
+replication: Q1 + Q2 + Q5.]**
 
 ## 3. Numeric criteria, pinned
 
@@ -118,7 +162,8 @@ median ratio. Outcome (a) is declared if the tracer's ratio is ≥ 0.95 (essenti
 trait's is ≤ 0.8. Anything in between is reported as partial/ambiguous, and Q1's interpretation then
 rests on the cued reads alone.
 
-**Q3 decision rule.** Let `R_i`, `R_ii`, `R_iii` be inferred-arm best-lexicon-rank medians under
+**Q3 decision rule** — *deferred with Q3 (§1a); retained verbatim for whenever it is runnable.* Let
+`R_i`, `R_ii`, `R_iii` be inferred-arm best-lexicon-rank medians under
 baseline, scene ablation, and matched-filler control ablation, at the reintroduction Cue B checkpoint.
 - Outcome (a) held latent: `R_ii ≤ 50` **and** `R_ii / R_iii ≤ 2.0` — i.e. ablating the scene costs
   little more than ablating an equally sized irrelevant span.
@@ -181,7 +226,14 @@ doesn't" is a statement about the two lenses' relative sensitivity to this signa
 J-space-privileged representation. The source paper needed its whole structural section to earn that
 stronger reading; this experiment does not get to borrow it.
 
-No Q1–Q3 criterion in §3 references the logit lens. The J-lens is primary throughout.
+No Q1/Q2 criterion in §3 references the logit lens. The J-lens is primary throughout.
+
+**Q5 discriminant reading (added 2026-07-20).** Beyond robustness, the same stream answers whether
+the J-lens earns its place, via the `{direct, inferred} × {logit, J-lens}` contrast (§2, Q5). The
+informative cell is the **inferred** arm: it is the one whose trait was never tokenised, so a plain
+unembedding readout has no symbol to project. If the J-lens surfaces it and the logit lens does not —
+with the logit lens having passed its positive control, so the null is interpretable — that is the
+instrument reading unexpressed latent content. Report per character; n = 8, descriptive.
 
 ## 5. Stimuli
 
@@ -333,3 +385,30 @@ Q4/D6 stubbed; Cue A's "Tom" retained verbatim.
 **Process note for future runs.** Spec-writing from results-plus-paper reproduces the *analysis* but
 cannot reproduce *decisions*, because decisions are not derivable from the flaws. The design decision
 tree travels with the results doc in any future handoff.
+
+### 2026-07-20 (later same day) — Q3 deferred, Q5 added
+
+**Data visible at the time: none.** Still nothing run.
+
+v1's `prediction.md` was read in full for the first time and found to contain a **"Design spec for a
+future run"** section (lines 360–483) that neither the v2 spec's author nor this pre-registration had
+seen. It records a prior feasibility judgement deferring the KV-ablation out of the read-only lab and
+naming "cued retrieval + interference + fragility read" as the primary next run. `trait-persistence-v2-spec.md`
+had promoted that deferred item to its primary novel result without knowledge of the deferral.
+
+- **Q3 deferred** (§1a). Requires intervention scaffolding and its own validation; not available.
+  Outcomes and the §7b gate are retained for whenever it becomes runnable. Q1 delivers the *distance*
+  half of the proposed differential-fragility shadow; the interference half needs Q4 and is not run.
+  **No held-latent-vs-held-scene claim may be drawn from this run.**
+- **Q5 added** — instrument discriminant, `{direct, inferred} × {logit, J-lens}`, wording carried over
+  from v1's follow-up spec. Free: it rides on the §4a stream already registered. With Q3 gone this is
+  the run's only genuinely new question, and it is a question about the *instrument*, not the model —
+  stated as such, not dressed up as more.
+- **Lexicon:** `heroism` added to `brave` (v1's refinement 1 prefers noun lexicalisations and names it
+  explicitly). No other lexicon changed.
+
+**Scope of this run, stated plainly:** a corrected replication of v1 under cued retrieval (Q1), with a
+copy-bias control (Q2) and a free instrument check (Q5). It is not the held-concept experiment. The
+held-concept question needs either the KV-ablation (proper lab) or v1's Redesign 3 direction probe —
+which v1's spec judged *cleaner than the ablation* for that question and, being a readout rather than
+an intervention, **within reach of this lab**. That is the natural next run, and it is not this one.

@@ -45,7 +45,7 @@ TRAIT_LEXICONS = {
     "generous":  ["generous", "generosity", "giving", "charity", "charitable",
                   "kindness", "kind", "donations", "gift", "selfless"],
     "brave":     ["brave", "bravery", "courage", "courageous", "fearless",
-                  "heroic", "hero", "daring", "bold", "valor"],
+                  "heroism", "heroic", "hero", "daring", "bold", "valor"],
     "curious":   ["curious", "curiosity", "inquisitive", "wonder", "interest",
                   "questions", "exploring", "probing"],
     "patient":   ["patient", "patience", "calm", "composed", "tolerant",

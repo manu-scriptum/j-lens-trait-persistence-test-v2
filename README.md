@@ -37,13 +37,25 @@ opening (now neutralised).
 |---|---|---|
 | **Q1** | Under *cued* retrieval, does a stated trait stay more retrievable than an inferred one across intervening text? | corrected replication |
 | **Q2** | Is the stated arm's persistence trait-specific, or generic token-echo? | tracer control |
-| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | the new science |
-| **Q4** | Does an inferred trait stay bound to the right entity under interference? | stub; cuttable |
+| **Q5** | Does the J-lens read what the logit lens can't? | free instrument check |
+| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | **deferred — not this run** |
+| **Q4** | Does an inferred trait stay bound to the right entity under interference? | stub; not this run |
 
-Q3 is the one worth running this for. Ablate the behavioural sentence's keys/values and re-probe:
-if retrieval survives, the model wrote a trait representation somewhere outside the scene tokens. If
-it collapses, there was never a stored trait — only cached behaviour, re-read on demand. **Both
-outcomes are publishable**, which is the property the pre-registration exists to protect.
+**Q3 is deferred, and that is deliberate.** Answering it means ablating the behavioural sentence's
+keys and values and re-probing — an *intervention*, needing KV-patching scaffolding plus its own
+validation that the ablation removed the trace rather than just breaking the model. That is out of
+reach of a read-only lens rig on a Colab T4. v1's own follow-up spec reached this conclusion first:
+*"park the causal ablation as a proper-lab step, not the immediate next run."*
+
+So this run is **the corrected replication, done properly** — which v1 could not do, because it could
+measure cued retrievability at exactly one accidental checkpoint out of thirteen. Q1's cued sweep
+across distance also delivers the *distance* half of the "differential fragility" read v1 proposed as
+the ablation's observational shadow. It is correlational, and **no held-latent-vs-held-scene claim is
+drawn from it.**
+
+The held-concept question's natural next step is not the ablation but v1's **direction probe** —
+reading the trait as a linear direction rather than a word, which v1's spec judged *cleaner than the
+ablation* for this question and, being a readout, within reach. That is a separate run.
 
 ## Design
 
@@ -93,20 +105,17 @@ Two outputs to actually read rather than scroll past: the **single-token report*
 fewer than 4 surviving lexicon entries is underpowered and must be flagged) and the **screening
 table** (which characters passed, and whether the valence balance survived).
 
-## Known open risk
+## Registered but not run
 
-The Q3 KV-ablation needs attention masking over a token span. Whether the public `jlens` API exposes
-this is **not yet verified** — if it does not, Phase 2 will drive it with forward pre-hooks on the HF
-attention modules, setting attention logits to −inf toward the scene-token span. V-zeroing is not an
-accepted silent substitute: zeroed values still let attention mass land on the span, changing the
-softmax denominator differently than masking does.
+Q3's KV-ablation stays fully specified in `prediction.md` (§3 decision rule, §7b implementation gate)
+so it can be picked up unchanged if the tooling ever becomes available. The gate is the part worth
+keeping visible: a failed attention mask produces a null **indistinguishable from Q3 outcome (b)**,
+which is the more surprising of the two findings — so D5 is reportable only if the mask demonstrably
+removes the scene, and a failed check reports **not-run, never a null**. Without that, a bug could
+manufacture the more interesting result.
 
-The verification guard is now a **registered gate** (`prediction.md` §7b), not advice. D5 is
-reportable only if the mask demonstrably removes the scene — the model can no longer answer "what did
-NAME do?" under scene ablation, and still can under the control ablation. If the gate fails, D5 is
-reported as **not-run, never as a null**. A failed mask produces a null that looks exactly like Q3
-outcome (b), which is the more surprising of the two findings; without the gate, a bug could
-manufacture a result.
+Q4 (two-entity interference) is a documented stub. Note that "Tom" is spent as a neutral name — it
+appears in Cue A in every prefix — so Q4 needs a different second entity if unstubbed.
 
 ## Scope and honesty
 
