@@ -219,7 +219,15 @@ def cue_read_positions(prefix, full_text, cue, name):
 
 
 def read_checkpoint(text, positions, groups):
-    jl_raw, _, _ = lens.apply(model, text, layers=BAND_LAYERS, positions=positions)
+    # jlens.apply tokenizes with max_length=max_seq_len (DEFAULT 512) and does NO bounds check on
+    # positions. At d=20-30 the sequence exceeds 512 tokens; jlens then truncates, our read
+    # positions (from the full text) run off the end, and the OOB gather surfaces as a CUDA
+    # device-side assert. Raise the limit well above the longest d=30 sequence (~600 tokens) so
+    # nothing is truncated and positions stay valid. The primary run (d<=10, <=~250 tokens) never
+    # hit this. Guard loudly in case a future distance blows past the limit.
+    _n = tokenizer(text, return_tensors="pt")["input_ids"].shape[1]
+    assert _n <= 2048, f"sequence is {_n} tokens; raise max_seq_len above it"
+    jl_raw, _, _ = lens.apply(model, text, layers=BAND_LAYERS, positions=positions, max_seq_len=2048)
     jl = {L: jl_raw[L].float() for L in BAND_LAYERS}
     ll = logit_lens_logits(text, BAND_LAYERS, positions)
     per_group = {}
