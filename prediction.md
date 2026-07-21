@@ -634,3 +634,76 @@ was scoped; the rest follow directly from §3 / §7b / spec D5 and are recorded 
 
 Build artifacts for this arm: `build_phase3.py` → `trait_persistence_v2_phase3.ipynb` (the run) and
 `analyze_phase3.py` (the frozen-rule analysis, off-GPU). Same file discipline as Phases 1–2.
+
+### 2026-07-21 (post-run) — Q3 gate flaw: the registered mask-check was a poor proxy, in both directions
+
+**Data visible at the time: the full Phase 3 ablation run.** This is a post-hoc entry. It changes **no
+frozen criterion and no reported verdict** — the §3 result stands exactly as `analyze_phase3.py`
+returns it. What it records is that the *gate metric pinned earlier today* turned out to be a bad
+realisation of the §7b criterion, and what was done about that.
+
+**The registered gate** (§9, "Q3 implementation pinned", item 5) scored scene-keyword **best rank at a
+single position** — the token immediately after the name in `"What did NAME do? NAME"`. The §7b
+criterion it was implementing is broader: *"the model can no longer answer 'what did NAME do?'"*
+
+**Why the proxy fails.** The scene keywords are largely nouns that the model emits 2–5 tokens later,
+not at the read position. The run's own stored continuations (`phase3_scene_continuations.csv`, a
+registered artifact) show the mask behaving correctly where the rank gate said it had not:
+
+| character | baseline continuation | scene-masked continuation | rank gate |
+|---|---|---|---|
+| Maria | "covered her colleague's rent." | "kept the ledgers." | **FAIL** |
+| Simon | "opened every unlabelled crate that came through." | "stacked crates at a warehouse." | **FAIL** |
+| Bruno | "left the gates half-raised and sat out the shift in" | "tended the canal lock." | **FAIL** |
+| Greta | "wrote down a weight that was never there." | "weighed produce at the market scale." | pass |
+| Nadia | "pulled a worker clear from under a freight stack." | "sorted freight at the rail yard." | pass |
+| Marek | "slipped through the back door and waited…" | "set type at the print shop." | pass |
+| Elias | "drove a delivery van out of a yard." | *identical* | **pass** |
+
+In every masked row the model falls back to reciting the **opening** (the occupation, never masked) —
+the signature of a mask that worked. The failure is **two-directional**:
+
+- **Three false failures** (Maria, Simon, Bruno). Compounding cause: the words the model actually emits
+  first — `covered`, `opens` — are precisely the ones dropped from `SCENE_KEYWORDS` earlier the same
+  day for leaking into filler. The drops removed the words sitting at the read position.
+- **One probable false pass** (Elias). He cleared the thresholds numerically (kw 32/270/26) while his
+  continuation is *identical across all three conditions* — the probe never elicited his scene at all.
+  §7b's "can **no longer** answer" presupposes that it could; for Elias it never did. He was also the
+  anomalous character in Phase 2 (Q1 ratio > 1, Q5 negative); "loyal" is a weak cue in every phase.
+
+**What does not change.** The frozen §3 verdict at the pinned d = 10 checkpoint remains
+**3 held-scene (Greta, Nadia, Elias) / 1 underpowered (Marek) / 3 not-run (Maria, Simon, Bruno);
+0 held-latent.** The three not-run characters are **not** promoted. §7b exists for exactly this
+situation, and the temptation to promote is strongest when the promotion would strengthen a result one
+already believes.
+
+**Post-hoc re-scoring, reported as a labelled secondary** (`analyze_phase3_posthoc.py`), on the same
+discipline v1 used for its §5 correction. §7b's criterion is scored **directly on the generated
+answer**: `scene_overlap` = distinct content words (≥4 chars, minus a fixed stopword list) shared with
+the character's `inferred` sentence, **excluding any word also in the opening** — so falling back to the
+occupation scores 0. Gate passes iff baseline ≥ 1, scene-masked = 0, control-masked ≥ 1.
+
+*Provenance, stated plainly:* this rule was written **after** seeing the frozen gate's output and after
+reading the d = 10 continuations. That is a researcher degree of freedom. Two things bound it — the rule
+was fixed before being computed, and its threshold is the least tunable available (binary presence, not
+a tuned count). It is **secondary and never overwrites the frozen verdict.**
+
+*Result:* **5 held-scene / 1 underpowered / 1 not-run; still 0 held-latent.** `scene_overlap` under
+scene-masking is **0 for all seven characters**, and baseline equals control for all seven — the control
+ablation did nothing while the scene ablation removed scene-reporting universally. Note the rule
+**removes Elias**, who *supported* the conclusion under the frozen gate, as well as admitting three:
+a metric tuned to inflate the finding would not discard a supporting case.
+
+**For any future run: register the continuation-based gate as primary from the start**, keeping the
+single-position rank read only as a secondary. The lesson generalises — the gate was specified in terms
+of a *behaviour* ("can no longer answer") but operationalised as a *single-token rank*, and the two came
+apart. Pin the operationalisation against the behaviour it is meant to detect, not against convenience.
+
+**Also logged (instrument note, no verdict impact).** Phase 3 loads the model `attn_implementation=
+"eager"` (required by the §7b mask mechanism); Phases 1–2 used the transformers default (SDPA). The two
+compute the same attention with different numerical kernels, so bf16 rank ties resolve differently:
+Phase 3's *baseline* condition reproduces Phase 2's d = 10 inferred/Cue B reads to within 0–3.5 rank
+positions (Bruno 4.0/4.0, Simon 2.0/2.0, Nadia 3.0/3.5, Elias 47.0/47.5, Greta 17.0/18.0, Maria
+22.5/26.0, Marek 901.0/897.5) rather than exactly. This is immaterial to every ratio reported here,
+because all three ablation conditions are measured **within the same eager pass**, so the kernel
+difference cancels; it appears only in the cross-phase comparison, which is where it is harmless.

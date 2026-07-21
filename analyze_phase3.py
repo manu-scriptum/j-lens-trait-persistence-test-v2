@@ -43,25 +43,36 @@ def _f(x):
         return None
 
 
+def _find(fname):
+    """Run outputs live in phase3/ (repo layout); fall back to the repo root."""
+    for p in (HERE / "phase3" / fname, HERE / fname):
+        if p.exists():
+            return p
+    raise FileNotFoundError(
+        f"{fname} not found in phase3/ or the repo root. Download the Phase 3 outputs from Colab first."
+    )
+
+
 # ---- load -------------------------------------------------------------------------------------
 ABL = {}   # (name, d, cond) -> R (inferred-arm trait j-median rank)
 MASK = {}  # (name, d, cond) -> scene_kw model-output rank
 DIRECT = {}  # (name, d, cond) -> direct-arm trait j-median rank
 NAMES, TRAITS, NKW = [], {}, {}
 
-with open(HERE / "phase3_ablation.csv", newline="", encoding="utf-8") as f:
+with open(_find("phase3_ablation.csv"), newline="", encoding="utf-8") as f:
     for x in csv.DictReader(f):
         ABL[(x["name"], int(x["distance"]), x["condition"])] = _f(x["trait_j_median_rank"])
         if x["name"] not in NAMES:
             NAMES.append(x["name"]); TRAITS[x["name"]] = x["trait"]
 
-with open(HERE / "phase3_maskcheck.csv", newline="", encoding="utf-8") as f:
+with open(_find("phase3_maskcheck.csv"), newline="", encoding="utf-8") as f:
     for x in csv.DictReader(f):
         MASK[(x["name"], int(x["distance"]), x["condition"])] = _f(x["scene_kw_out_rank"])
         NKW[x["name"]] = int(x["n_scene_kw_ids"])
 
-direct_path = HERE / "phase3_direct.csv"
-if direct_path.exists():
+direct_path = next((p for p in (HERE / "phase3" / "phase3_direct.csv", HERE / "phase3_direct.csv")
+                    if p.exists()), None)
+if direct_path is not None:
     with open(direct_path, newline="", encoding="utf-8") as f:
         for x in csv.DictReader(f):
             DIRECT[(x["name"], int(x["distance"]), x["condition"])] = _f(x["trait_j_median_rank"])

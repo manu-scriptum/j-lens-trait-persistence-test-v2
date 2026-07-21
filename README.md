@@ -42,7 +42,7 @@ opening (now neutralised).
 | **Q1** | Under *cued* retrieval, does a stated trait stay more retrievable than an inferred one across intervening text? | answered | **no detectable difference** (Wilcoxon p=0.81; holds to d=30) |
 | **Q2** | Is the stated arm's persistence trait-specific, or generic token-echo? | answered | **not word-echo** — content-specific (tracer near its own floor) |
 | **Q5** | Does the J-lens read what the logit lens can't? | answered | mixed, n=3: clean for Greta, partial Nadia, none Elias |
-| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | **built — ready to run** (not yet run) | — |
+| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | answered | **held scene** — 0/7 held-latent; mask the scene and the trait goes |
 | **Q4** | Does an inferred trait stay bound to the right entity under interference? | stub; not this run | — |
 
 **Q3 is deferred, and that is deliberate.** Answering it means ablating the behavioural sentence's
@@ -97,6 +97,15 @@ in [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md).
 **No held-latent-vs-held-scene claim is drawn** (Q3 deferred). The natural next run is v1's direction
 probe, above.
 
+> **Update (2026-07-21) — Q3 has since run.** The KV-ablation answers it: **held scene.** Masking the
+> behavioural sentence's attention keys collapses inferred-trait retrievability (30–172× at d=10) while
+> an equally sized filler ablation does nothing; **0 of 7 characters show a held latent.** The
+> symmetric direct-arm test shows the *stated* trait is equally dependent on its literal token (median
+> ×56 when masked, ×0.90 for a neutral word). So Phase 2's null reads as **"no difference because
+> neither is stored"** — both arms are reconstructed on demand from source text that never left the
+> context. Full write-up, including a documented gate flaw that cost three certifications:
+> [`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md).
+
 ## Design
 
 Ten candidate characters (5 positive / 5 negative traits), screened to a target of eight. Each has
@@ -137,12 +146,13 @@ be told apart from an instrument that simply can't see at these depths.
   [`trait_persistence_v2_phase2ext.ipynb`](trait_persistence_v2_phase2ext.ipynb) (the §7a extension),
   [`trait_persistence_v2_phase3.ipynb`](trait_persistence_v2_phase3.ipynb) (the Q3 KV-ablation — built, not yet run).
   Built by the matching `build_*.py`.
-- **Data + write-ups:** [`phase1/`](phase1/) (band + screening outputs, `PHASE1_NOTES.md`) and
-  [`phase2/`](phase2/) (the sweep + extension CSVs, `PHASE2_RESULTS.md`). Phase 3 outputs land in
-  `phase3/` after the run.
+- **Data + write-ups:** [`phase1/`](phase1/) (band + screening outputs, `PHASE1_NOTES.md`),
+  [`phase2/`](phase2/) (the sweep + extension CSVs, `PHASE2_RESULTS.md`), and
+  [`phase3/`](phase3/) (the ablation CSVs, [`PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md)).
 - **Analysis:** [`analyze_phase2.py`](analyze_phase2.py) (primary) and
   [`analyze_phase2ext.py`](analyze_phase2ext.py) (combined trend); [`analyze_phase3.py`](analyze_phase3.py)
-  (the Q3 verdict behind the §7b gate). Pure stdlib; exact Wilcoxon.
+  (the Q3 verdict behind the §7b gate) and [`analyze_phase3_posthoc.py`](analyze_phase3_posthoc.py)
+  (the labelled post-hoc gate re-scoring). Pure stdlib; exact Wilcoxon.
 
 ## Running the notebooks
 
