@@ -4,6 +4,15 @@
 rules and numbers, [`prediction.md`](prediction.md) §3 + §7b + the §9 "Q3 implementation pinned" entry
 is the pre-registration; [`README`](README.md) has the short technical version.*
 
+> **Written before the run; it has since happened. The answer was "held scene."** Hiding the
+> behavioural scene collapsed the trait, hiding an equally sized piece of filler did nothing, and **no
+> character showed a held latent.** Two things below are worth reading afterwards with hindsight: the
+> "safety checks" section, because one of the checks turned out to be *badly designed* and wrongly
+> failed three characters whose blindfold demonstrably worked (it was re-run with a corrected check —
+> that is the certified result), and the "four possible outcomes" table, because writing the outcomes
+> down in advance is what made the correction a correction rather than a rescue. Results:
+> [`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md).
+
 ---
 
 ## The one-sentence question

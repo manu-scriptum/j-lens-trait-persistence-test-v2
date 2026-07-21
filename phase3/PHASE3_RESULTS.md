@@ -1,5 +1,15 @@
 # Phase 3 results — the KV-ablation (Q3): held latent vs held scene
 
+> **This run was superseded the same day — but not corrected.** Its gate turned out to be a poor
+> realisation of the §7b criterion (§3 below), so only 3 of 7 characters could be certified here.
+> **Phase 3b** re-ran the identical ablation with a corrected gate registered in advance and produced
+> the **certified verdict: 5 held-scene / 1 underpowered / 1 not-run, 0 held-latent**, with every trait
+> read reproducing this run **exactly** (0.0% deviation). Read
+> [`../phase3b/PHASE3B_RESULTS.md`](../phase3b/PHASE3B_RESULTS.md) for the verdict of record.
+>
+> This document stays as the dated record of the first run and of the gate flaw — which is worth
+> keeping, since the flaw and its handling are more instructive than the certification.
+
 Run 2026-07-21, `trait_persistence_v2_phase3.ipynb` on Colab T4; analysed with
 [`analyze_phase3.py`](../analyze_phase3.py) against the **frozen** criteria in
 [`prediction.md`](../prediction.md) §3 + §7b. n = 7 survivors, band 13–26, decision checkpoint
@@ -212,8 +222,9 @@ patched over.
 
 ## 8. Limitations
 
-- **n = 7**, three certified under the frozen gate (five post-hoc). Single-character results are visible
-  in every table precisely because aggregates at this size are draggable.
+- **n = 7**, three certified under the frozen gate (five post-hoc; five again under Phase 3b's
+  pre-registered gate). Single-character results are visible in every table precisely because aggregates
+  at this size are draggable.
 - **The registered gate was a poor proxy** for its own criterion, in both directions (§3). The corrected
   scoring is post-hoc and labelled as such; it is not the registered result.
 - **Elias is unreliable throughout** — weak cue in Phase 1, anomalous in Phase 2's Q1 and Q5, probable

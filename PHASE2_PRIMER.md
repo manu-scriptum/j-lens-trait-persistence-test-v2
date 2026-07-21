@@ -122,6 +122,16 @@ Two deeper questions are parked, on purpose:
 > what was possible and Fable pointed it out. So the held-in-mind-vs-rebuilt question is now the
 > **planned next experiment**, run here rather than parked. (Getting a call wrong and fixing it in the
 > open is the job, not an embarrassment — same as v1.)
+>
+> **Update (2026-07-21, later): it has now run, and it has an answer.** Hide the behavioural scene from
+> the model's attention and ask again, and the trait goes with it — while hiding an equally sized chunk
+> of unrelated filler changes nothing. **The trait was never being held; it was being worked out afresh
+> from the scene each time it was asked for.** The same turns out to be true of the *stated* version:
+> hide the word "generous" and the trait collapses too. So the finding of this run — that the two kinds
+> read as equally retrievable — has an explanation: **neither is remembered, and both are re-read from
+> what is still on the page.** Plain-language walkthrough of that experiment:
+> [`PHASE3_PRIMER.md`](PHASE3_PRIMER.md); results in
+> [`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md).
 
 So this run is the honest, corrected version of v1's core question — done properly this time — and
 nothing is dressed up as more than that.

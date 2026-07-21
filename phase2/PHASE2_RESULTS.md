@@ -133,7 +133,9 @@ Whether to spend the run is a judgement call for the researcher.
 - It finds **no reliable stated > inferred retrievability difference** (Q1 outcome 2), against a
   backdrop of strong per-character heterogeneity that a re-read/re-derive story does not by itself
   predict.
-- **No held-latent-vs-held-scene claim is drawn** (Q3 deferred, §1a). The distance half of the
+- **No held-latent-vs-held-scene claim is drawn** (Q3 deferred, §1a) — *by this run.* Q3 has since run
+  and answers it: **held scene**, 0/7 held-latent
+  ([`../phase3b/PHASE3B_RESULTS.md`](../phase3b/PHASE3B_RESULTS.md)). The distance half of the
   differential-fragility read is here; the interference half (Q4) is not.
 - n = 7, single-item medians draggable by one character (Elias demonstrably so); one trait ("loyal")
   behaved as a weak cue and is flagged rather than dropped.
@@ -199,6 +201,17 @@ from one *held as a standing latent*. We watched; we did not intervene. Separati
 what the KV-ablation (Q3) was for, and it is deferred. **So the honest reading is: the collapse story
 is wrong, and the held-vs-re-derived question is wide open — not settled in either direction.**
 
+> **Update (2026-07-21, later the same day): Q3 has since run, and this passage is the question it
+> answered.** The reasoning above stands — it is exactly why an intervention was needed — but the
+> conclusion no longer does: the question is **no longer wide open**. Masking the scene's attention keys
+> collapses inferred-trait retrievability (30–172×) while an equally sized filler mask does nothing;
+> **0 of 7 characters show a held latent.** The trait is *re-derived from the still-visible scene*, not
+> held. The symmetric test says the same of the stated arm (median ×56 when its literal word is masked,
+> ×0.90 for a neutral word), which reframes this run's own headline: Phase 2's null is **"no difference
+> because neither is stored"**. Certified verdict:
+> [`../phase3b/PHASE3B_RESULTS.md`](../phase3b/PHASE3B_RESULTS.md); first run and its documented gate
+> flaw: [`../phase3/PHASE3_RESULTS.md`](../phase3/PHASE3_RESULTS.md).
+
 **Retrievability is not representation.** Everything here is read through vocabulary-projection lenses,
 which see *disposition to say the trait word*. A trait could be held as a feature while never near the
 tip of the tongue, and no lens used here would see it. Expression, retrievability, and representation
@@ -227,6 +240,14 @@ the KV-ablation in a proper lab.
 > `prediction.md` §7b already pins. The researcher underestimated the setup; Fable caught it. Q3 is now
 > the planned next arm; the held-vs-re-derived question it settles is no longer waiting on someone
 > else's lab. See `prediction.md` §9 (2026-07-21, post-run).
+>
+> **Update (2026-07-21, later the same day):** it ran, twice — the ablation
+> ([`../phase3/PHASE3_RESULTS.md`](../phase3/PHASE3_RESULTS.md)) and a re-run with a corrected,
+> pre-registered gate ([`../phase3b/PHASE3B_RESULTS.md`](../phase3b/PHASE3B_RESULTS.md), the certified
+> verdict). **Answer: held scene**, 5/7 certified, 0 held-latent. Of the two follow-ups named above, the
+> **direction probe is now the one that remains** — and it matters more after Q3, not less: everything
+> measured here and in the ablation is *retrievability*, so "not retrievable once the scene is masked"
+> still is not "not represented".
 
 ## Files
 
