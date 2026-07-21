@@ -1,0 +1,8 @@
+name,j_median_d0_inferred,logit_median_d0_inferred,factor,logit_positive_control
+Bruno,3.0,177.0,59.0,False
+Elias,10.0,9.0,0.9,True
+Greta,11.0,54.0,4.909090909090909,True
+Marek,41.5,226.0,5.445783132530121,False
+Maria,4.0,34.5,8.625,False
+Nadia,1.0,3.5,3.5,True
+Simon,2.5,29.0,11.6,False
