@@ -791,3 +791,42 @@ Phase 3b runs**, and the README will not assert them until they have passed.
 
 Build artifacts: `build_phase3b.py` → `trait_persistence_v2_phase3b.ipynb`, analysed by
 `analyze_phase3b.py`. Outputs are `phase3b_*` so they never collide with Phase 3's.
+
+### 2026-07-21 (post-run) — Phase 3b outcome, and two things it corrected in this document
+
+**Data visible at the time: the complete Phase 3b run.** Logged for the record; changes no criterion.
+Full write-up: [`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md).
+
+**Outcome: 5 held-scene / 1 underpowered / 1 not-run; 0 held-latent**, on the pre-registered gate.
+**All 7 registered expectations matched, Elias included — he failed the primary gate as predicted.**
+That was the entry's purpose: a gate that certified all seven, including the character whose scene the
+probe demonstrably never elicited, would have been a rubber stamp and the five certifications worthless.
+
+**Two things this run corrected in the entries above:**
+
+1. **The bf16/eager drift expectation was wrong.** The instrument note in "Q3 gate flaw" anticipated that
+   rank ties would shuffle slightly between sessions. They do not: Phase 3b reproduces **every one of the
+   21 (character × condition) trait cells exactly**, largest relative deviation **0.0%**. The pipeline is
+   deterministic on this hardware. The 0–3.5 rank differences logged there remain correctly attributed —
+   they are **Phase 2 vs Phase 3**, i.e. SDPA vs eager, not session-to-session noise.
+2. **The total-mask degradation check's premise was wrong** (registered above as item 5). It assumed
+   removing context monotonically reduces trait retrievability; masking the whole story moved Maria 26.0 →
+   55.5 (×2.1) while masking only the 19-token scene moved her 26.0 → 714.5 (×30). The mask is not at
+   fault — for a `"NAME is ___"` probe, **empty context is not a floor but a moderate prior**, in which
+   trait adjectives are natural completions. The stored top-20 vocabulary shows the mechanism: with the
+   scene masked the surviving opening steers the readout to *occupation* nouns (`accountant`, `librarian`)
+   that displace the trait; with everything masked that competitor is gone too. The registered soft
+   warning (rather than a hard assert) was the right call, and the check should be **re-specified for any
+   future run** as "masking the story must destroy scene *reporting*", which is what the semantic gate
+   already measures — not "must worsen the trait rank."
+
+   Two consequences worth carrying: a **specificity control obtained by accident** (masking 214 tokens
+   gives ×2.1, masking the right 19 gives ×30 — the effect tracks *which* tokens, not *how many*), and a
+   **qualification on effect size** (part of `R_ii`'s magnitude is surviving context competing, not pure
+   evidence-removal; the `R_ii/R_iii` ratio is unaffected, since both conditions retain that context).
+
+**Unresolved and reported as such: the two gates disagree** on Elias (primary FAIL / secondary PASS, both
+distances) and marginally on Greta at d = 30. Even position-agnostic, a rank proxy measures whether a
+keyword is *available*, not whether the model *reported the scene*. The continuation-scored gate is the
+better realisation of §7b — now an empirical claim rather than an argument. Future runs: keep the rank
+read as a secondary and do not let it decide.

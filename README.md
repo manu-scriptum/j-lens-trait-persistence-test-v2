@@ -11,8 +11,10 @@ the author before commit; the claims are the author's own. Numerical outputs and
 instrument checks that halt the run when they fail, and on the raw data — which ships here in full,
 precisely so it can be checked by someone other than its author.*
 
-**Findings and full write-up → [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md) (Q1/Q2/Q5) and
-[`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md) (Q3, the KV-ablation)**
+**Findings and full write-up → [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md) (Q1/Q2/Q5),
+[`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md) (Q3, the KV-ablation), and
+[`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md) (Q3 re-run, corrected gate — the certified
+verdict)**
 
 Does a character trait that is **stated outright** ("Maria is generous") stay *retrievable* in a
 language model's internal state differently from one that must be **inferred from behaviour**
@@ -49,33 +51,42 @@ timestamp).
    memory measurements, this artifact applies to you. ([`phase2/`](phase2/).)
 
 2. **Neither stated nor inferred traits are stored; both are reconstructed on demand from still-visible
-   context.** KV-ablation at d = 10, repeated at d = 30. Masking attention to the behavioural scene
-   collapses inferred-trait retrievability (×30–172 for the five characters certified by the post-hoc
-   scoring; frozen-gate certifies 3, including one weak case at ×6.8 — **both scorings shipped**).
-   Masking the literal trait token collapses stated-trait retrievability (median ×56, 6 of 7). Equally
-   sized irrelevant masks do essentially nothing in either arm (control ratio ≈ 1.0 for all 7). **Zero
-   characters show a held latent under either scoring.** The effect holds at **every distance tested
-   (d = 1–30)**, though the ratio is noisy and **not monotone** — four certified characters show a larger
-   ratio at d = 30 than d = 10 (e.g. 172× → 681×), one runs the other way (30× → 5.5×). Note this is a
-   matched dissociation *within each arm*, **not a double dissociation**: the crossed cells were not run,
-   and one cannot exist — the inferred arm has no trait token to mask. Scope: retrievability in the
+   context.** KV-ablation at d = 10, repeated at d = 30, then re-run with a gate registered in advance.
+   Masking attention to the behavioural scene collapses inferred-trait retrievability (**×30–172 across
+   the five characters certified under the pre-registered gate**; the first run's gate certified 3 — both
+   runs and both scorings ship, along with the gate flaw that explains the difference). Masking the
+   literal trait token collapses stated-trait retrievability (median ×56, 6 of 7). Equally sized
+   irrelevant masks do essentially nothing in either arm (control ratio ≈ 1.0 for all 7). **Zero
+   characters show a held latent** under any scoring, at any distance. The effect holds at **every
+   distance tested (d = 1–30)**, though the ratio is noisy and **not monotone** — some characters show a
+   larger ratio at d = 30 than d = 10 (e.g. 172× → 681×), one runs the other way (30× → 5.5×). Note this
+   is a matched dissociation *within each arm*, **not a double dissociation**: the crossed cells were not
+   run, and one cannot exist — the inferred arm has no trait token to mask. Scope: retrievability in the
    verbalizable register only; a non-verbalizable trace would be invisible to both lenses used here.
-   ([`phase3/`](phase3/).)
+   ([`phase3/`](phase3/), [`phase3b/`](phase3b/).)
 
-3. **Retrieval outcome cannot distinguish retrieval route.** Stated-vs-inferred retrievability is a true
+3. **The re-run reproduces the first run exactly, and its gate rejects as well as admits.** Every trait
+   read reproduces to the digit (largest relative deviation **0.0%** across 21 character × condition
+   cells, two separate sessions). All **7 of 7 outcomes registered in advance** were matched — including
+   the one recorded specifically to make the corrected gate falsifiable: the character whose scene the
+   probe never elicited (`loyal`) had to **fail** the gate, and did. If you want a worked example of
+   pre-registering the answer so a permissive instrument cannot quietly certify everything, it is here.
+   ([`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md), [`prediction.md`](prediction.md) §9.)
+
+4. **Retrieval outcome cannot distinguish retrieval route.** Stated-vs-inferred retrievability is a true
    null (Wilcoxon p = 0.81, medians identical to three decimals, unchanged to d = 30 with ample dynamic
    range) even though the ablations show the two arms reconstruct from different sources. Re-derivation
    from a scene is behaviourally indistinguishable from re-reading a token while both sources remain in
    context. Route questions need causal interventions, not retrieval curves. (Phases 2 + 3 jointly.)
 
-4. **J-lens > logit lens where it matters, on a live example.** For one character the J-lens reads a
+5. **J-lens > logit lens where it matters, on a live example.** For one character the J-lens reads a
    never-tokenised inferred trait at rank ≈ 11–31 across all distances while the plain unembedding has it
    at ≈ 116–219; partial advantage for a second, none for a third (n = 3 with passed positive controls;
    reported as instrument sensitivity, not representational privilege). Includes a pre-registered
    asymmetric interpretation rule for logit-lens nulls you are welcome to steal.
    ([`prediction.md`](prediction.md) §4a.)
 
-5. **Two stimulus-design lessons, paid for.** (a) Screening gates at the trigger catch no-inference
+6. **Two stimulus-design lessons, paid for.** (a) Screening gates at the trigger catch no-inference
    stimuli (v1's `patient`) but not downstream pathology: one abstract relational trait (`loyal`) passed
    screening and then failed anomalously in every phase — direct-arm retrievability worse than a no-trait
    control, no lens advantage, and a probable false gate pass in the ablation. Behavioural traits and
@@ -89,12 +100,24 @@ timestamp).
   (arm × distance × cue), byte-identical shared prefixes, entity cue vs. explicit trait query, all reads
   on cue tokens. ([`trait_persistence_v2_spec.md`](trait_persistence_v2_spec.md) §D2.)
 - **KV-ablation recipe with its verification checks:** attention-logit masking to −∞ over a token span
-  (not V-zeroing — the deviation clause explains why), verified two ways before any result was trusted —
-  a **mechanistic** check that attention mass landing on the masked span is ~0 across every band
-  layer/head (0.945 → 0.00), and a **semantic severance gate** ("what did NAME do?", transcripts
-  shipped). Includes a **documented gate-proxy failure in both directions** and a labelled post-hoc
-  re-scoring that *removes* a case supporting the headline — a worked example of handling an instrument
-  flaw without promoting convenient data. ([`phase3/`](phase3/), [`prediction.md`](prediction.md) §9.)
+  (not V-zeroing — the deviation clause explains why), with four checks run before any result was read:
+  **attention mass** on the masked span goes to ~0 across every band layer/head (0.945 → 0.00);
+  **null-mask identity** — hooks registered over an empty span reproduce the unhooked logits
+  *bit-identically*, proving the hook is inert when it masks nothing; a **semantic severance gate**
+  ("what did NAME do?", transcripts shipped); and a **total-mask probe**, which fired a warning whose
+  investigation turned out to be the most informative result of the set (see below). Includes a
+  **documented gate-proxy failure in both directions**, a labelled post-hoc re-scoring that *removes* a
+  case supporting the headline, and a re-run whose corrected gate was pre-registered together with the
+  outcome it had to produce — worked examples of handling an instrument flaw without promoting convenient
+  data. ([`phase3/`](phase3/), [`phase3b/`](phase3b/), [`prediction.md`](prediction.md) §9.)
+- **A caution for anyone using rank-based lens measures.** Masking the *whole* story degraded a trait
+  read far less (×2.1) than masking just the 19-token scene (×30) — because with the scene gone the
+  surviving context ("Maria keeps the ledgers at a shipping office") moves *occupation* words into the
+  slot, whereas with no context at all the model falls back on a prior in which trait adjectives are
+  natural. **A rank measure reports the winner of a competition, so "the concept dropped" and "something
+  else arrived" are indistinguishable unless you stored what took its place.** It also yields a
+  specificity control for free: the effect tracks *which* tokens are masked, not *how many*.
+  ([`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md) §5a.)
 - **A worked pre-registration discipline for lens work:** frozen thresholds committed before code,
   registered conditional extensions with numeric triggers, walled-off exploratory sections, dated
   corrections that supersede rather than overwrite (v1 §5 catches a normalization artifact; Phase 2
@@ -135,7 +158,7 @@ opening (now neutralised).
 | **Q1** | Under *cued* retrieval, does a stated trait stay more retrievable than an inferred one across intervening text? | answered | **no detectable difference** (Wilcoxon p=0.81; holds to d=30) |
 | **Q2** | Is the stated arm's persistence trait-specific, or generic token-echo? | answered | **not word-echo** — content-specific (tracer near its own floor) |
 | **Q5** | Does the J-lens read what the logit lens can't? | answered | mixed, n=3: clean for Greta, partial Nadia, none Elias |
-| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | answered | **held scene** — 0/7 held-latent; mask the scene and the trait goes |
+| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | answered (re-run, certified) | **held scene** — 5/7 certified, 0 held-latent; mask the scene and the trait goes |
 | **Q4** | Does an inferred trait stay bound to the right entity under interference? | stub; not this run | — |
 
 **Q3 is deferred, and that is deliberate.** Answering it means ablating the behavioural sentence's

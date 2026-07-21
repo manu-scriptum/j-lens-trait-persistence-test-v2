@@ -1,0 +1,316 @@
+name,distance,condition,is_decision,continuation,scene_kw_rank_gen,n_scene_kw_ids,gen_positions
+Elias,0,baseline,False," stayed on because he was loyal to the firm.
+
+**",1.0,4,12
+Elias,0,scene,False," drove a delivery van out of a yard.
+
+Final Answer",348.0,4,12
+Elias,1,baseline,False," stayed on at the firm.
+
+The question is a bit",1.0,4,12
+Elias,1,scene,False, drove a delivery van out of a yard in Vellin.,259.0,4,12
+Elias,1,control,False," stayed on.
+
+The answer is: **stayed on",1.0,4,12
+Elias,2,baseline,False," stayed on at the firm.
+",1.0,4,12
+Elias,2,scene,False," drove a delivery van out of a yard.
+
+The question",278.0,4,12
+Elias,2,control,False," stayed at the firm.
+",1.0,4,12
+Elias,4,baseline,False," drove a delivery van.
+",32.0,4,12
+Elias,4,scene,False," drove a delivery van out of a yard.
+
+Final Answer",277.0,4,12
+Elias,4,control,False," drove a delivery van out of a yard.
+
+Final Answer",5.0,4,12
+Elias,7,baseline,False," drove a delivery van out of a yard.
+
+",3.0,4,12
+Elias,7,scene,False," drove a delivery van out of a yard.
+",272.0,4,12
+Elias,7,control,False," drove a delivery van out of a yard.
+
+",5.0,4,12
+Elias,10,baseline,True," drove a delivery van out of a yard.
+",4.0,4,12
+Elias,10,scene,True, drove a delivery van out of a yard.,270.0,4,12
+Elias,10,control,True," drove a delivery van out of a yard.
+
+",5.0,4,12
+Elias,30,baseline,False," drives a delivery van out of a yard.
+",7.0,4,12
+Elias,30,scene,False," drives a delivery van out of a yard.
+",304.0,4,12
+Elias,30,control,False," drives a delivery van out of a yard.
+",11.0,4,12
+Maria,0,baseline,False," was generous and forgiving.
+
+The answer is: Maria was",121.0,3,12
+Maria,0,scene,False," kept the ledgers at a shipping office.
+
+Maria kept",1027.0,3,12
+Maria,1,baseline,False," helped a colleague in need.
+
+The answer is: Maria",1.0,3,12
+Maria,1,scene,False," kept the ledgers.
+
+The question is asking what Maria",371.0,3,12
+Maria,1,control,False," covered her colleague's rent.
+
+Let's analyze",1.0,3,12
+Maria,2,baseline,False," paid her colleague's rent.
+",1.0,3,12
+Maria,2,scene,False," kept the ledgers.
+
+The question is a bit of",579.0,3,12
+Maria,2,control,False," paid her colleague's rent.
+
+The answer is:",1.0,3,12
+Maria,4,baseline,False," covered her colleague's rent.
+",1.0,3,12
+Maria,4,scene,False," kept the ledgers.
+",1037.0,3,12
+Maria,4,control,False," covered her colleague's rent.
+",1.0,3,12
+Maria,7,baseline,False," covered her colleague's rent.
+",1.0,3,12
+Maria,7,scene,False," kept the ledgers.
+",1208.0,3,12
+Maria,7,control,False," covered her colleague's rent.
+",1.0,3,12
+Maria,10,baseline,True," covered her colleague's rent.
+",1.0,3,12
+Maria,10,scene,True," kept the ledgers.
+",1463.0,3,12
+Maria,10,control,True," covered her colleague's rent.
+",1.0,3,12
+Maria,30,baseline,False, covered the difference when a colleague came up short on rent.,1.0,3,12
+Maria,30,scene,False, kept the ledgers at a shipping office in Vellin.,960.0,3,12
+Maria,30,control,False, covered the difference when a colleague came up short on rent.,1.0,3,12
+Nadia,0,baseline,False," saved a worker's life.
+",1.0,5,12
+Nadia,0,scene,False," sorted freight at the rail yard.
+",102.0,5,12
+Nadia,1,baseline,False," saved a worker's life.
+",1.0,5,12
+Nadia,1,scene,False," sorted freight at the rail yard.
+
+The question is asking",84.0,5,12
+Nadia,1,control,False," climbed under the load twice to pull him clear.
+
+Question",1.0,5,12
+Nadia,2,baseline,False," rescued a worker from under a pile of freight.
+
+Final",1.0,5,12
+Nadia,2,scene,False," sorted freight at the rail yard.
+
+The question is a",77.0,5,12
+Nadia,2,control,False," climbed under the load twice to pull a worker clear.
+
+",1.0,5,12
+Nadia,4,baseline,False," pulled a worker clear from under a freight stack.
+
+",1.0,5,12
+Nadia,4,scene,False," sorted freight at the rail yard.
+
+The question asks what",83.0,5,12
+Nadia,4,control,False," pulled a worker clear from under a freight stack.
+
+Final",1.0,5,12
+Nadia,7,baseline,False," pulled a worker clear from under a freight stack.
+",1.0,5,12
+Nadia,7,scene,False," sorted freight at the rail yard.
+",88.0,5,12
+Nadia,7,control,False," pulled a worker clear from under a freight stack.
+
+",1.0,5,12
+Nadia,10,baseline,True," pulled a worker clear from under a freight stack.
+
+",1.0,5,12
+Nadia,10,scene,True, sorted freight at the rail yard.,93.0,5,12
+Nadia,10,control,True," pulled a worker clear from under a freight stack.
+
+",1.0,5,12
+Nadia,30,baseline,False," climbed under the load twice to pull a worker clear.
+",1.0,5,12
+Nadia,30,scene,False, sorted freight at the rail yard.,92.0,5,12
+Nadia,30,control,False," climbed under the load twice to pull a worker clear.
+",1.0,5,12
+Simon,0,baseline,False," opened crates.
+
+Final Answer: The final answer is $\",257.0,3,12
+Simon,0,scene,False," stacked crates at a warehouse.
+
+The question asks what Simon",349.0,3,12
+Simon,1,baseline,False," opened every unlabelled crate that came through the warehouse.
+
+",6.0,3,12
+Simon,1,scene,False," stacked crates at a warehouse.
+
+The question is asking what",253.0,3,12
+Simon,1,control,False," opened every unlabelled crate.
+
+Final Answer: The final",17.0,3,12
+Simon,2,baseline,False," opened every unlabelled crate that came through.
+
+The question",16.0,3,12
+Simon,2,scene,False," stacked crates.
+
+The question is a bit of a trick",258.0,3,12
+Simon,2,control,False," opened every unlabelled crate that came through.
+
+Final Answer",17.0,3,12
+Simon,4,baseline,False," opened every unlabelled crate that came through.
+
+What is",17.0,3,12
+Simon,4,scene,False," stacked crates.
+
+The question is asking what Simon did.",339.0,3,12
+Simon,4,control,False," opened every unlabelled crate that came through.
+
+Final Answer",18.0,3,12
+Simon,7,baseline,False," opened every unlabelled crate that came through.
+
+What is",13.0,3,12
+Simon,7,scene,False," stacked crates at a warehouse.
+",313.0,3,12
+Simon,7,control,False," opened every unlabelled crate that came through.
+
+What is",16.0,3,12
+Simon,10,baseline,True," opened every unlabelled crate that came through.
+
+",22.0,3,12
+Simon,10,scene,True," stacked crates at a warehouse.
+",372.0,3,12
+Simon,10,control,True," opened every unlabelled crate that came through.
+
+What is",22.0,3,12
+Simon,30,baseline,False," opened every unlabelled crate that came through.
+",18.0,3,12
+Simon,30,scene,False," stacked crates at a warehouse.
+",341.0,3,12
+Simon,30,control,False," opened every unlabelled crate that came through.
+",18.0,3,12
+Bruno,0,baseline,False," was lazy.
+
+The answer is: Bruno was lazy.",59.0,3,12
+Bruno,0,scene,False," tended the canal lock.
+",62.0,3,12
+Bruno,1,baseline,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,1,scene,False," tended the canal lock.
+",39.0,3,12
+Bruno,1,control,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,2,baseline,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,2,scene,False," tended the canal lock.
+
+The question is asking what Bruno",43.0,3,12
+Bruno,2,control,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,4,baseline,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,4,scene,False," tended the canal lock.
+",40.0,3,12
+Bruno,4,control,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,7,baseline,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,7,scene,False," tended the canal lock.
+",47.0,3,12
+Bruno,7,control,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,10,baseline,True, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,10,scene,True, tended the canal lock.,47.0,3,12
+Bruno,10,control,True, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,30,baseline,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Bruno,30,scene,False, tended the canal lock.,53.0,3,12
+Bruno,30,control,False, left the gates half-raised and sat out the shift in,1.0,3,12
+Greta,0,baseline,False," is a fraud.
+
+Greta is a fraud.
+
+",79.0,3,12
+Greta,0,scene,False," weighed produce at the market scale in Vellin.
+
+The",96.0,3,12
+Greta,1,baseline,False," is a con artist.
+
+**Answer:** Greta is a",25.0,3,12
+Greta,1,scene,False," weighed produce at the market scale in Vellin.
+
+The",77.0,3,12
+Greta,1,control,False," is a fraud.
+
+Greta is a fraud.
+
+",24.0,3,12
+Greta,2,baseline,False," is a con artist.
+
+The question is a riddle.",29.0,3,12
+Greta,2,scene,False," weighed produce at the market scale.
+
+The question states that",135.0,3,12
+Greta,2,control,False, is a fraud. She is cheating the customers by writing down,2.0,3,12
+Greta,4,baseline,False," is a fraud.
+
+The question is asking what Greta did",61.0,3,12
+Greta,4,scene,False," weighed produce at the market scale.
+
+The question asks what",187.0,3,12
+Greta,4,control,False," wrote down a weight that was never there.
+
+The question",39.0,3,12
+Greta,7,baseline,False," wrote down a weight that was never there.
+
+This is",34.0,3,12
+Greta,7,scene,False," weighed produce at the market scale.
+",123.0,3,12
+Greta,7,control,False," wrote down a weight that was never there.
+
+Final Answer",40.0,3,12
+Greta,10,baseline,True," wrote down a weight that was never there.
+
+",14.0,3,12
+Greta,10,scene,True," weighed produce at the market scale.
+",157.0,3,12
+Greta,10,control,True," wrote down a weight that was never there.
+
+Final Answer",18.0,3,12
+Greta,30,baseline,False," wrote down a weight that was never there.
+",5.0,3,12
+Greta,30,scene,False," weighed produce at the market scale in Vellin.
+",174.0,3,12
+Greta,30,control,False," wrote down a weight that was never there.
+",12.0,3,12
+Marek,0,baseline,False," waited until the voices stopped.
+
+Marek slipped through the",1.0,5,12
+Marek,0,scene,False," set type at the print shop.
+What is the main",197.0,5,12
+Marek,1,baseline,False, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,1,scene,False," set type at the print shop.
+
+The question asks what",402.0,5,12
+Marek,1,control,False, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,2,baseline,False," slipped through the back door.
+",1.0,5,12
+Marek,2,scene,False," set type at the print shop.
+
+The question is asking",333.0,5,12
+Marek,2,control,False, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,4,baseline,False," slipped through the back door and waited.
+",1.0,5,12
+Marek,4,scene,False," set type at the print shop.
+
+Final Answer: The",271.0,5,12
+Marek,4,control,False, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,7,baseline,False," slipped through the back door and waited.
+",1.0,5,12
+Marek,7,scene,False," set type at the print shop.
+
+Final Answer: The",229.0,5,12
+Marek,7,control,False, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,10,baseline,True, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,10,scene,True, set type at the print shop.,260.0,5,12
+Marek,10,control,True, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,30,baseline,False, slipped through the back door and waited until the voices stopped.,1.0,5,12
+Marek,30,scene,False, set type at the print shop.,251.0,5,12
+Marek,30,control,False, slipped through the back door and waited until the voices stopped.,1.0,5,12
