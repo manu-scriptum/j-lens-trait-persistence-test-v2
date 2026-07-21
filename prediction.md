@@ -707,3 +707,65 @@ positions (Bruno 4.0/4.0, Simon 2.0/2.0, Nadia 3.0/3.5, Elias 47.0/47.5, Greta 1
 22.5/26.0, Marek 901.0/897.5) rather than exactly. This is immaterial to every ratio reported here,
 because all three ablation conditions are measured **within the same eager pass**, so the kernel
 difference cancels; it appears only in the cross-phase comparison, which is where it is harmless.
+
+### 2026-07-21 — Phase 3b: corrected gate registered as primary (pre-data FOR THE RE-RUN)
+
+**Data visible at the time: the complete Phase 3 run.** This entry is **post-data with respect to
+Phase 3** and **pre-data with respect to Phase 3b**, the re-run it governs. That distinction is the
+whole point of writing it, and the honest description of the corrected gate's status is:
+**pre-registered for this run, derived from the previous one.** That is meaningfully better than
+post-hoc; it is *not* the same as having specified it correctly the first time, and the re-run does not
+launder it. This sentence stays attached to the result permanently.
+
+**What the re-run is worth, stated up front so it is never oversold.** The trait measurements are
+expected to *reproduce*, not to change — same model, same texts, same masks. Phase 3b therefore buys
+exactly two things: (i) a verdict resting on a gate fixed before that run's data existed, and (ii) an
+independent replication of the ablation effect. It buys **no new information about the model**, and any
+write-up saying otherwise is wrong.
+
+**Everything not named below is unchanged from Phase 3** — model, lens, pin, band (13–26), roster (n=7),
+stimuli, arms, cues, distances, the d=10 Cue B decision checkpoint, and the §3 verdict rule. Phase 3b's
+trait reads are directly comparable to Phase 3's and serve as the replication.
+
+**1. Primary gate (new): continuation-scored.** §7b's criterion is a *behaviour* — "the model can no
+longer answer 'what did NAME do?'" — so it is scored on the generated answer, not on a proxy:
+
+> `scene_overlap(continuation)` = number of distinct content words (≥ 4 characters, minus a fixed
+> stopword list, both frozen in `analyze_phase3_posthoc.py`) shared with that character's `inferred`
+> sentence, **excluding any word that also occurs in the shared opening**.
+>
+> The gate **passes** iff `scene_overlap` is **≥ 1 at baseline**, **= 0 under scene ablation**, and
+> **≥ 1 under matched-filler ablation**.
+
+Excluding opening words is load-bearing: with the scene masked the model falls back to reciting the
+occupation, and that fallback must score 0 rather than count as "still reporting".
+
+**2. Secondary gate (repaired, not abandoned): position-agnostic rank.** The Phase 3 gate failed because
+it read scene-keyword rank at a **single** position. It is retained, repaired, as a secondary: best
+scene-keyword rank across the **first 12 generated positions** (the generation length), thresholds
+unchanged from §9 "Q3 implementation pinned" (`kw_i ≤ 50`, `kw_ii/kw_i ≥ 5.0`, `kw_iii/kw_i ≤ 2.0`).
+Both gates are reported. **Agreement closes the instrument question; disagreement is reported as an
+open instrument problem, not resolved in favour of whichever is more convenient.**
+
+**3. Registered expectations, so the corrected gate is falsifiable rather than merely permissive.**
+A gate that certifies everything is not a gate. Predicted outcomes for Phase 3b, recorded before it runs:
+
+- **Elias FAILS the primary gate** (`scene_overlap` = 0 at baseline — his probe never elicited the scene
+  in Phase 3, identical continuations in all three conditions). If Elias *passes*, the corrected gate is
+  more permissive than intended and that is reported as a problem with the gate.
+- **Marek passes the gate but returns (c) underpowered** (baseline trait rank ≈ 900).
+- **The remaining five — Greta, Nadia, Maria, Simon, Bruno — pass and return (b) held scene.**
+- **No character returns held latent.** A held-latent result would be a genuine surprise and is the
+  outcome most worth reporting if it appears.
+
+Recording the expected answer costs nothing when the analysis is mechanical, and it converts "the gate
+let more characters through" from a reassuring observation into a checkable one.
+
+**4. Deliberately NOT changed.** Scene keywords are **not** re-picked, despite the Phase 3 finding that
+the model's first-emitted words (`covered`, `opens`) had been dropped for filler leakage. Re-picking
+keywords after seeing which ones the model says would tune the stimulus to the observed output; the
+position-agnostic secondary gate addresses the same problem without touching the pre-registered word
+lists. The roster is likewise not back-filled and the underpowered characters are not replaced.
+
+Build artifacts: `build_phase3b.py` → `trait_persistence_v2_phase3b.ipynb`, analysed by
+`analyze_phase3b.py`. Outputs are `phase3b_*` so they never collide with Phase 3's.

@@ -71,17 +71,21 @@ def _find(fname):
 
 
 # ---- load -------------------------------------------------------------------------------------
-CONT = {}
-for x in csv.DictReader(open(_find("phase3_scene_continuations.csv"), newline="", encoding="utf-8")):
-    CONT[(x["name"], int(x["distance"]), x["condition"])] = x["continuation"]
+# NOTE: loading is deferred into main() so that the *scoring rule* above (STOP, content_words,
+# scene_overlap) can be imported by analyze_phase3b.py without this script's file I/O or report
+# running. Phase 3b must use the byte-identical rule, not a copy of it that could drift.
+CONT, ABL, NAMES = {}, {}, []
 
-ABL = {}
-NAMES = []
-for x in csv.DictReader(open(_find("phase3_ablation.csv"), newline="", encoding="utf-8")):
-    ABL[(x["name"], int(x["distance"]), x["condition"])] = _f(x["trait_j_median_rank"])
-    if x["name"] not in NAMES:
-        NAMES.append(x["name"])
-NAMES = sorted(NAMES)
+
+def _load():
+    global NAMES
+    for x in csv.DictReader(open(_find("phase3_scene_continuations.csv"), newline="", encoding="utf-8")):
+        CONT[(x["name"], int(x["distance"]), x["condition"])] = x["continuation"]
+    for x in csv.DictReader(open(_find("phase3_ablation.csv"), newline="", encoding="utf-8")):
+        ABL[(x["name"], int(x["distance"]), x["condition"])] = _f(x["trait_j_median_rank"])
+        if x["name"] not in NAMES:
+            NAMES.append(x["name"])
+    NAMES = sorted(NAMES)
 
 
 def verdict(name, d):
@@ -98,28 +102,34 @@ def verdict(name, d):
     return "partial", rr
 
 
-print("POST-HOC gate re-scoring (NOT the registered result — see analyze_phase3.py).")
-print(f"Rule: scene-specific content-word overlap in the generated answer; pass iff base>=1, scene==0, ctrl>=1.")
-print(f"\n{'='*100}\nd = {DEC_D}\n{'='*100}")
-print(f"{'char':<8}{'base':>6}{'scene':>7}{'ctrl':>6}  {'gate':<10}{'verdict':<18}{'ratio':>9}")
+def main():
+    _load()
+    print("POST-HOC gate re-scoring (NOT the registered result — see analyze_phase3.py).")
+    print("Rule: scene-specific content-word overlap in the generated answer; pass iff base>=1, scene==0, ctrl>=1.")
+    print(f"\n{'='*100}\nd = {DEC_D}\n{'='*100}")
+    print(f"{'char':<8}{'base':>6}{'scene':>7}{'ctrl':>6}  {'gate':<10}{'verdict':<18}{'ratio':>9}")
 
-tally = {}
-for name in NAMES:
-    c = S.by_name(name)
-    ov = {cond: scene_overlap(CONT.get((name, DEC_D, cond), ""), c)
-          for cond in ("baseline", "scene", "control")}
-    passed = ov["baseline"] >= 1 and ov["scene"] == 0 and ov["control"] >= 1
-    if passed:
-        tag, rr = verdict(name, DEC_D)
-    else:
-        tag, rr = "NOT-RUN (gate)", None
-    tally[tag] = tally.get(tag, 0) + 1
-    print(f"{name:<8}{ov['baseline']:>6}{ov['scene']:>7}{ov['control']:>6}  "
-          f"{'PASS' if passed else 'FAIL':<10}{tag:<18}{(f'{rr:.1f}x' if rr else ''):>9}")
+    tally = {}
+    for name in NAMES:
+        c = S.by_name(name)
+        ov = {cond: scene_overlap(CONT.get((name, DEC_D, cond), ""), c)
+              for cond in ("baseline", "scene", "control")}
+        passed = ov["baseline"] >= 1 and ov["scene"] == 0 and ov["control"] >= 1
+        if passed:
+            tag, rr = verdict(name, DEC_D)
+        else:
+            tag, rr = "NOT-RUN (gate)", None
+        tally[tag] = tally.get(tag, 0) + 1
+        print(f"{name:<8}{ov['baseline']:>6}{ov['scene']:>7}{ov['control']:>6}  "
+              f"{'PASS' if passed else 'FAIL':<10}{tag:<18}{(f'{rr:.1f}x' if rr else ''):>9}")
 
-print("\n  tally: " + ", ".join(f"{k}={v}" for k, v in sorted(tally.items())))
-print("\nContinuations behind the scoring (d=10):")
-for name in NAMES:
-    print(f"\n  {name}:")
-    for cond in ("baseline", "scene", "control"):
-        print(f"    {cond:<9}: {(CONT.get((name, DEC_D, cond), '') or '').strip()[:88]}")
+    print("\n  tally: " + ", ".join(f"{k}={v}" for k, v in sorted(tally.items())))
+    print("\nContinuations behind the scoring (d=10):")
+    for name in NAMES:
+        print(f"\n  {name}:")
+        for cond in ("baseline", "scene", "control"):
+            print(f"    {cond:<9}: {(CONT.get((name, DEC_D, cond), '') or '').strip()[:88]}")
+
+
+if __name__ == "__main__":
+    main()
