@@ -5,6 +5,12 @@ single-model, exploratory; stated as such throughout. Experiments designed and p
 author; code, analysis scripts, and much of the prose written with Claude (Anthropic). Not
 peer-reviewed. ("We" throughout is the customary authorial voice, not a team.)*
 
+*Human review: every line of prose here — README, primers, pre-registration, results docs — is read by
+the author before commit; the claims are the author's own. Numerical outputs and notebook code are
+**not** line-by-line human-verified. They rest instead on criteria frozen before the data existed, on
+instrument checks that halt the run when they fail, and on the raw data — which ships here in full,
+precisely so it can be checked by someone other than its author.*
+
 **Findings and full write-up → [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md) (Q1/Q2/Q5) and
 [`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md) (Q3, the KV-ablation)**
 
