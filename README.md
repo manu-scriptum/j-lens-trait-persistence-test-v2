@@ -1,6 +1,12 @@
 # j-lens-trait-persistence-test-v2
 
-**Findings and full write-up → [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md)**
+*Independent research — no affiliated lab, no funding, single author, run on a free Colab T4. Small-n,
+single-model, exploratory; stated as such throughout. Experiments designed and pre-registered by the
+author; code, analysis scripts, and much of the prose written with Claude (Anthropic). Not
+peer-reviewed.*
+
+**Findings and full write-up → [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md) (Q1/Q2/Q5) and
+[`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md) (Q3, the KV-ablation)**
 
 Does a character trait that is **stated outright** ("Maria is generous") stay *retrievable* in a
 language model's internal state differently from one that must be **inferred from behaviour**
