@@ -27,6 +27,87 @@ This supersedes
 (v1, run 2026-07-13), which stays frozen as the record of that run. The design authority for v2 is
 [`trait_persistence_v2_spec.md`](trait_persistence_v2_spec.md).
 
+## Why this repo might be worth your time
+
+Small-n, single-model, hobbyist-run — and stated as such throughout. What follows is the honest list of
+what is here that you might actually use. All claims: `google/gemma-3-4b-it`, J-lens + logit lens,
+n = 7 stimuli, descriptive statistics, pre-registered criteria frozen before data (git history is the
+timestamp).
+
+### Findings you can check or build on
+
+1. **Passive lens readouts systematically underestimate retention.** v1 read the lens at sentence-final
+   positions and found inferred character traits "collapse within one sentence." v2 replaced passive
+   reads with cued retrieval (an explicit trait query) and the collapse vanished: inferred traits remain
+   retrievable to d = 30 filler sentences (5–6 of 7 characters). If you are using lens decay curves as
+   memory measurements, this artifact applies to you. ([`phase2/`](phase2/).)
+
+2. **Neither stated nor inferred traits are stored; both are reconstructed on demand from still-visible
+   context.** KV-ablation at d = 10, repeated at d = 30. Masking attention to the behavioural scene
+   collapses inferred-trait retrievability (×30–172 for the five characters certified by the post-hoc
+   scoring; frozen-gate certifies 3, including one weak case at ×6.8 — **both scorings shipped**).
+   Masking the literal trait token collapses stated-trait retrievability (median ×56, 6 of 7). Equally
+   sized irrelevant masks do essentially nothing in either arm (control ratio ≈ 1.0 for all 7). **Zero
+   characters show a held latent under either scoring.** The effect holds at **every distance tested
+   (d = 1–30)**, though the ratio is noisy and **not monotone** — four certified characters show a larger
+   ratio at d = 30 than d = 10 (e.g. 172× → 681×), one runs the other way (30× → 5.5×). Note this is a
+   matched dissociation *within each arm*, **not a double dissociation**: the crossed cells were not run,
+   and one cannot exist — the inferred arm has no trait token to mask. Scope: retrievability in the
+   verbalizable register only; a non-verbalizable trace would be invisible to both lenses used here.
+   ([`phase3/`](phase3/).)
+
+3. **Retrieval outcome cannot distinguish retrieval route.** Stated-vs-inferred retrievability is a true
+   null (Wilcoxon p = 0.81, medians identical to three decimals, unchanged to d = 30 with ample dynamic
+   range) even though the ablations show the two arms reconstruct from different sources. Re-derivation
+   from a scene is behaviourally indistinguishable from re-reading a token while both sources remain in
+   context. Route questions need causal interventions, not retrieval curves. (Phases 2 + 3 jointly.)
+
+4. **J-lens > logit lens where it matters, on a live example.** For one character the J-lens reads a
+   never-tokenised inferred trait at rank ≈ 11–31 across all distances while the plain unembedding has it
+   at ≈ 116–219; partial advantage for a second, none for a third (n = 3 with passed positive controls;
+   reported as instrument sensitivity, not representational privilege). Includes a pre-registered
+   asymmetric interpretation rule for logit-lens nulls you are welcome to steal.
+   ([`prediction.md`](prediction.md) §4a.)
+
+5. **Two stimulus-design lessons, paid for.** (a) Screening gates at the trigger catch no-inference
+   stimuli (v1's `patient`) but not downstream pathology: one abstract relational trait (`loyal`) passed
+   screening and then failed anomalously in every phase — direct-arm retrievability worse than a no-trait
+   control, no lens advantage, and a probable false gate pass in the ablation. Behavioural traits and
+   abstract relational traits do not behave alike. (b) Verbatim persistence in passive reads is
+   content-specific, not copy-echo (neutral tracer word embedded in the same trigger sentence: ratio
+   ≈ 0.88 vs trait ≈ 0.04) — but carry a tracer anyway; it calibrates the echo floor per run.
+
+### Methodological artifacts you can reuse
+
+- **Cued-retrieval protocol for lens-based memory probes:** forked continuations per
+  (arm × distance × cue), byte-identical shared prefixes, entity cue vs. explicit trait query, all reads
+  on cue tokens. ([`trait_persistence_v2_spec.md`](trait_persistence_v2_spec.md) §D2.)
+- **KV-ablation recipe with its verification checks:** attention-logit masking to −∞ over a token span
+  (not V-zeroing — the deviation clause explains why), verified two ways before any result was trusted —
+  a **mechanistic** check that attention mass landing on the masked span is ~0 across every band
+  layer/head (0.945 → 0.00), and a **semantic severance gate** ("what did NAME do?", transcripts
+  shipped). Includes a **documented gate-proxy failure in both directions** and a labelled post-hoc
+  re-scoring that *removes* a case supporting the headline — a worked example of handling an instrument
+  flaw without promoting convenient data. ([`phase3/`](phase3/), [`prediction.md`](prediction.md) §9.)
+- **A worked pre-registration discipline for lens work:** frozen thresholds committed before code,
+  registered conditional extensions with numeric triggers, walled-off exploratory sections, dated
+  corrections that supersede rather than overwrite (v1 §5 catches a normalization artifact; Phase 2
+  records a mean-vs-median phantom that the registered statistic dissolved). If you want a template for
+  keeping yourself honest at n = 7, this is one.
+- **Full raw data at every stage:** per-layer ranks, top-20 vocabulary per checkpoint, all transcripts,
+  pinned environments, and analysis scripts for both the frozen and post-hoc scorings. Every table in
+  the results docs regenerates from the CSVs.
+
+### What this is not
+
+Not a claim about transformers in general, about storage in non-verbalizable formats, about the
+global-workspace framing of the source paper, or anything with inferential statistics behind it. One
+small model, one prompt family, one lens pair, seven characters. The natural follow-ups are specified
+but not run: a **linear direction-probe** (would see what vocabulary-projection lenses cannot),
+**forced-eviction designs** (every result here is about contexts where the evidence never left the
+page), and **two-entity interference** (binding fidelity). If you run any of them, an issue or PR with
+what you found would be read with interest.
+
 ## Why there is a v2
 
 v1's central problem: 11 of its 13 checkpoints were passive reads at sentence-final periods. That
