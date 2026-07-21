@@ -179,6 +179,49 @@ inflation of a right-skewed rank distribution (chiefly Elias). The frozen §3 me
 *per-character median ratio*, on which the separation vanishes. Mean-of-ranks is not the registered
 statistic, and this is why.
 
+## Interpretation (beyond the pre-registered analysis)
+
+*This section is interpretation, not registered result. It reasons about what the numbers above might
+mean and is held to a lower evidential bar than §3's frozen criteria. Read the results first, then
+disagree with this freely.*
+
+**v1's "re-read vs re-derive" mechanism is not supported at the retrieval level.** v1 proposed that a
+stated trait persists because its literal token can be re-read, while an inferred trait fades because
+it must be re-derived from scratch. Under cued retrieval that prediction fails twice: the inferred
+trait does not fade (retrievable to d=30), and it is no less retrievable than the stated one. Whatever
+asymmetry v1 measured lived in *what the model spontaneously emits at a sentence end*, not in *what it
+can retrieve when asked*.
+
+**But the deeper question is untouched, for a structural reason.** "Equally retrievable" is not
+"equally held". In this design the behavioural scene stays in context the whole way out — nothing is
+evicted — so a trait *re-derived fresh from the still-visible scene on each query* is indistinguishable
+from one *held as a standing latent*. We watched; we did not intervene. Separating those two is exactly
+what the KV-ablation (Q3) was for, and it is deferred. **So the honest reading is: the collapse story
+is wrong, and the held-vs-re-derived question is wide open — not settled in either direction.**
+
+**Retrievability is not representation.** Everything here is read through vocabulary-projection lenses,
+which see *disposition to say the trait word*. A trait could be held as a feature while never near the
+tip of the tongue, and no lens used here would see it. Expression, retrievability, and representation
+are three different questions; v2 measured the middle one. The representation question needs the
+direction probe (the natural next run).
+
+**The heterogeneity probably tracks cue strength, not mechanism.** The characters where the stated arm
+wins (Greta, Marek, Maria) versus where the inferred wins (Nadia, Simon) do not sort by anything
+mechanistic we registered. The parsimonious read is that it reflects how *vivid and stereotyped* the
+behavioural scene is against how *strong* the bare adjective is — "climbed under the load twice to pull
+him clear" is a louder cue than "Nadia is brave." Elias's "loyal" is weak both ways and reads worse
+than its control: a cue-quality failure, not a fact about loyalty. The aggregate null is real, but it
+is an average over stimuli of uneven strength, at n=7.
+
+**Q5, modestly.** For at least one clean case (Greta) the J-lens reads a trait that was never written
+down while the logit lens has it buried — the instrument doing the thing it claims. That earns the
+J-lens some keep on this task, but n=3, mixed, and it is a statement about lens sensitivity, not about
+a privileged representation in the model.
+
+**What would actually move this forward:** v1's direction probe — read the trait as a linear direction,
+continuously across the filler, the cleanest in-reach test of *held vs re-derived* — and, eventually,
+the KV-ablation in a proper lab.
+
 ## Files
 
 | file | what it is |
