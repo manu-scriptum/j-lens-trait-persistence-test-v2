@@ -33,10 +33,38 @@ FILLER_SENTENCES = [
     "A ridge of low hills marks the eastern edge of the district, covered in scrub and loose rock.",
     "The oldest building still standing is a squat administrative hall with a tiled roof.",
     "A single road bridge crosses the river at the southern edge, wide enough for one lane of traffic.",
+    # --- §7a extension filler (added 2026-07-21; see prediction.md §9) --------------------------
+    # Twenty more town-generic, trait-neutral sentences so distance can reach d=30. Indices 0-9
+    # above are UNCHANGED, so every d<=10 prefix stays byte-identical to the primary Phase 2 run.
+    # These 20 continue the same dull physical-description register and contain no trait-lexicon
+    # word, no tracer word, and no character name (asserted in the self-check below).
+    "The covered hall opens onto the square through a row of iron gates.",
+    "Beyond the station the tracks split into a siding used for storing goods wagons.",
+    "A narrow stream runs parallel to the eastern road for most of its length.",
+    "The water tower on the hill was built from the same grey stone as the hall.",
+    "Most of the houses along the avenue have shutters painted a faded green.",
+    "The covered hall closes at midday on the first and third days of the week.",
+    "A footpath crosses the meadow between the school and the old mill.",
+    "The mill by the river has not turned its wheel in many years.",
+    "Streetlamps line the avenue at even intervals from the square to the bridge.",
+    "The regional bus stops twice a day at a shelter near the north gate.",
+    "Rainwater collects in a shallow basin at the low end of the square.",
+    "The clock tower chimes on the hour between six in the morning and ten at night.",
+    "A stone wall separates the churchyard from the lane behind it.",
+    "The bakery on the corner keeps the same opening hours all year.",
+    "Two rows of allotments lie between the last houses and the ridge.",
+    "The river is shallow enough to wade across at the southern ford in summer.",
+    "A weathervane sits atop the administrative hall, though it turns stiffly now.",
+    "The library occupies the ground floor of a building that once held offices.",
+    "Cobbled side streets branch off the main road at irregular angles.",
+    "The fountain is drained and cleaned once at the end of each autumn.",
 ]
 
 # Distances in filler sentences from the trigger (spec §5).
 DISTANCES = [0, 1, 2, 4, 7, 10]
+# §7a registered conditional extension distances (prediction.md §9, 2026-07-21). Uses the 20
+# extension filler sentences above; runs only if the §7a trigger fired (it did — see §9).
+EXT_DISTANCES = [15, 20, 30]
 
 # Concept lexicons (D1 / prediction.md §6). Each entry is checked single-token in its
 # LEADING-SPACE form at run time; failures are dropped and logged, never substituted.
@@ -207,5 +235,20 @@ if __name__ == "__main__":
         n_inf, n_ctl = len(c["inferred"].split()), len(c["control"].split())
         print(f"  {c['name']:<7} {c['trait']:<10} {c['valence']}  tracer={c['tracer']:<9} "
               f"inferred/control length {n_inf}/{n_ctl} words")
+
+    # §7a extension: the 20 added filler sentences must be trait-neutral. No trait-lexicon word,
+    # no tracer word, and no character name may appear (whole-word) in ANY filler sentence.
+    import re
+    _banned = {w.lower() for words in TRAIT_LEXICONS.values() for w in words}
+    _banned |= {c["tracer"].lower() for c in CANDIDATES}
+    _banned |= {c["name"].lower() for c in CANDIDATES}
+    for _i, _s in enumerate(FILLER_SENTENCES):
+        _hits = {w for w in _banned if re.search(rf"\b{re.escape(w)}\b", _s.lower())}
+        assert not _hits, f"filler[{_i}] leaks {_hits}: {_s!r}"
+    print(f"\nfiller: {len(FILLER_SENTENCES)} sentences, all trait/tracer/name-neutral (checked). "
+          f"primary d={DISTANCES}, §7a extension d={EXT_DISTANCES}")
+
     print("\nExample probe (Maria / inferred / d=2 / cue_b):")
     print(" ", build_probe(by_name("Maria"), "inferred", 2, "cue_b"))
+    print("Example §7a-extension probe (Marek / direct / d=20 / cue_b):")
+    print(" ", build_probe(by_name("Marek"), "direct", 20, "cue_b"))

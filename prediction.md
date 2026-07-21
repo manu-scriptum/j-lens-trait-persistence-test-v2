@@ -498,3 +498,38 @@ is now 1-in-7.
 inferred and control arms against the trait lexicon at d0. It is blind to persistence at d ≥ 1 (Q1), to
 the tracer stream (Q2), and to the logit-vs-J-lens contrast (Q5) — none of which has been measured. The
 n therefore cannot have been tuned to a result that does not yet exist.
+
+### 2026-07-21 (later still) — §7a conditional extension fired; extension filler declared
+
+**Data visible at the time: the full Phase 2 primary sweep** (Q1 + Q2 + Q5 over d ∈ {0,1,2,4,7,10}),
+analysed in [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md). This entry is therefore *not*
+pre-data — but the action it records was itself **pre-registered** in §7a, so running it follows the
+plan rather than adding a degree of freedom. What is genuinely new — the 20 extra filler sentences — is
+declared here before the extension is run, and is chosen for neutrality, not for any outcome.
+
+**The §7a trigger, evaluated on the primary data.** §7a extends the sweep to d ∈ {15,20,30} iff, at
+d=10 under Cue B, (i) the direct arm's median ratio-to-control across survivors is ≤ 0.8 *and* (ii) the
+direct-vs-inferred contrast has not opened up from d4 to d10 — with a Q2 override if Q2 returned copy
+bias. Observed: direct median ratio-to-control **d10 = 0.020 ≤ 0.8** (i ✔); contrast (inferred−direct)
+**d4 = +0.009, d10 = −0.001**, i.e. no separation emerged (ii ✔); **Q2 was not outcome (b)** (it was
+partial, leaning trait-specific), so the override does **not** apply. **The extension is triggered.**
+
+The honest caveat §7a itself raises is recorded with the trigger: direct ratio ≈ 0.02 also means the
+direct rank sits near the **rank floor**, so the absent separation may be a dynamic-range ceiling rather
+than true convergence — which is exactly what a longer-distance probe is for. The extension carries the
+**same descriptive status as the primary sweep**; it is a dynamic-range probe, not a result chase, and
+draws **no new held-latent-vs-held-scene claim** (Q3 stays deferred, §1a).
+
+**Extension filler (D2, extended).** Reaching d=30 needs more than the 10 filler sentences of the
+primary run. `trait_persistence_v2_stimuli.py` now carries **20 additional** town-generic sentences
+(indices 10–29). The original 10 (indices 0–9) are **unchanged and still first**, so every d ≤ 10
+prefix is **byte-identical** to the primary run and the primary results stay reproducible. The 20 new
+sentences continue the same dull physical-description register and are verified (self-check) to contain
+**no trait-lexicon word, no tracer word, and no character name** — the same neutrality the original
+filler meets. They were written for neutrality before any extension read exists; they cannot have been
+tuned to an extension result.
+
+**Measures, cues, arms, band, roster, lexicons, tracers: all unchanged** from the primary run. Only the
+distance set changes, to `EXT_DISTANCES = [15, 20, 30]`. The extension run is
+`trait_persistence_v2_phase2ext.ipynb`; its reads are analysed together with the primary sweep across
+d ∈ {4, 7, 10, 15, 20, 30} to read the trend.
