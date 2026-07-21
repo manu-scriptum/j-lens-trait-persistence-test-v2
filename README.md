@@ -1,5 +1,7 @@
 # j-lens-trait-persistence-test-v2
 
+**Findings and full write-up → [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md)**
+
 Does a character trait that is **stated outright** ("Maria is generous") stay *retrievable* in a
 language model's internal state differently from one that must be **inferred from behaviour**
 ("Maria covered a colleague's rent and never mentioned it")? And when an inferred trait is
