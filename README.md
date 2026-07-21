@@ -8,9 +8,11 @@ from the scene it originally read?
 
 Measured with the **Jacobian lens** on `google/gemma-3-4b-it`.
 
-> **Status: Phase 1 built, not yet run.** Pre-registration committed before any code. Phase 1
-> (calibration + screening) runs in Colab; Phase 2 (main sweep + ablation) is written once Phase 1's
-> outputs come back.
+> **Status: complete (Q1 + Q2 + Q5), run 2026-07-21.** Pre-registration committed before any code.
+> Phase 1 (calibration + screening) and Phase 2 (the cued sweep + the §7a extension to d=30) have run
+> on Colab T4. **Headline: no detectable stated-vs-inferred retrievability difference at any distance
+> — and, contra v1, the inferred trait does not collapse.** Full write-up in
+> [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md). Q3 and Q4 remain deferred by design.
 
 This supersedes
 [`j-lens-trait-persistence-test`](https://github.com/manu-scriptum/j-lens-trait-persistence-test)
@@ -33,13 +35,13 @@ opening (now neutralised).
 
 ## Questions
 
-| | question | status |
-|---|---|---|
-| **Q1** | Under *cued* retrieval, does a stated trait stay more retrievable than an inferred one across intervening text? | corrected replication |
-| **Q2** | Is the stated arm's persistence trait-specific, or generic token-echo? | tracer control |
-| **Q5** | Does the J-lens read what the logit lens can't? | free instrument check |
-| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | **deferred — not this run** |
-| **Q4** | Does an inferred trait stay bound to the right entity under interference? | stub; not this run |
+| | question | status | result |
+|---|---|---|---|
+| **Q1** | Under *cued* retrieval, does a stated trait stay more retrievable than an inferred one across intervening text? | answered | **no detectable difference** (Wilcoxon p=0.81; holds to d=30) |
+| **Q2** | Is the stated arm's persistence trait-specific, or generic token-echo? | answered | **not word-echo** — content-specific (tracer near its own floor) |
+| **Q5** | Does the J-lens read what the logit lens can't? | answered | mixed, n=3: clean for Greta, partial Nadia, none Elias |
+| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | **deferred — not this run** | — |
+| **Q4** | Does an inferred trait stay bound to the right entity under interference? | stub; not this run | — |
 
 **Q3 is deferred, and that is deliberate.** Answering it means ablating the behavioural sentence's
 keys and values and re-probing — an *intervention*, needing KV-patching scaffolding plus its own
@@ -57,6 +59,35 @@ The held-concept question's natural next step is not the ablation but v1's **dir
 reading the trait as a linear direction rather than a word, which v1's spec judged *cleaner than the
 ablation* for this question and, being a readout, within reach. That is a separate run.
 
+## Findings
+
+Run 2026-07-21 on `gemma-3-4b-it`; n = 7 survivors (screening dropped 3 of 10, no back-fill), band
+13–26. All results descriptive, against the frozen §3 criteria. Full detail and per-character tables
+in [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md).
+
+- **Q1 — no detectable stated-vs-inferred difference.** Wilcoxon p = 0.81 in the primary window and
+  p = 0.94 across the §7a extension to d = 30; the median ratio-to-control is effectively identical
+  for the two arms throughout. Not a finding of "stated wins", per the pre-registered rule.
+- **The headline is what did *not* happen: the inferred trait does not collapse.** Under cued
+  retrieval it stays retrievable out to **d = 30** (5–6 of 7 characters) — the direct opposite of v1's
+  passive-read result, where inference vanished after a *single* filler sentence. v1's "collapse" was
+  an artifact of reading at sentence-ends instead of querying.
+- **The null is real, not a range ceiling.** The §7a extension was run precisely to check whether the
+  absent separation was both arms pinned near the rank floor. It is not: control ranks sit at ~200–300
+  at long distance (ample room), yet the arms stay indistinguishable.
+- **Strong per-character heterogeneity.** Greta, Marek, Maria lean stated-more-retrievable; Nadia,
+  Simon lean the other way; **Elias ("loyal") is anomalous** — the stated trait reads *worse* than the
+  no-trait control, a weak-cue failure flagged rather than dropped.
+- **Q2 — the direct arm's persistence is content-specific, not word-echo.** The neutral tracer sits
+  near its own control floor while the trait persists near ceiling. (Formally "ambiguous" by the frozen
+  threshold, but the direction is unambiguous.)
+- **Q5 — mixed, n = 3** (only where the logit positive control passed): a clean J-lens > logit-lens
+  advantage for Greta (reads the never-tokenised trait the logit lens has buried), partial for Nadia,
+  none for Elias. Reported as instrument sensitivity, not a representation claim.
+
+**No held-latent-vs-held-scene claim is drawn** (Q3 deferred). The natural next run is v1's direction
+probe, above.
+
 ## Design
 
 Ten candidate characters (5 positive / 5 negative traits), screened to a target of eight. Each has
@@ -67,8 +98,9 @@ three arms sharing an identical opening, filler block, and cue set — only the 
 - **control** — a trait-neutral behavioural sentence, matched to the inferred one in length *and
   topic domain* (same objects, same setting, different action)
 
-At each distance d ∈ {0, 1, 2, 4, 7, 10} filler sentences, a **separate forked forward pass** appends
-a retrieval cue to a byte-identical prefix:
+At each distance d ∈ {0, 1, 2, 4, 7, 10} filler sentences (extended to {15, 20, 30} by the
+pre-registered §7a conditional run), a **separate forked forward pass** appends a retrieval cue to a
+byte-identical prefix:
 
 - **Cue A** — `"Tom glances at NAME."` (entity cue, topic-free)
 - **Cue B** — `"What kind of person is NAME? NAME is"` (trait query; carries the primary contrast)
@@ -85,25 +117,35 @@ be told apart from an instrument that simply can't see at these depths.
 ## Files
 
 - [`prediction.md`](prediction.md) — the pre-registration. **Read this first.** All numeric criteria
-  are pinned there, including the screening thresholds, which were frozen rather than tuned.
-- [`trait_persistence_v2_stimuli.py`](trait_persistence_v2_stimuli.py) — canonical stimuli, lexicons, tracers, cues. Part of the
-  pre-registration, not implementation; the notebook imports it rather than restating any string.
+  are pinned there; §9 logs every dated amendment (n=7, the tracer swaps, the §7a extension).
+- [`trait_persistence_v2_stimuli.py`](trait_persistence_v2_stimuli.py) — canonical stimuli, lexicons, tracers, cues, filler. Part of the
+  pre-registration, not implementation; the notebooks import it rather than restating any string.
 - [`trait_persistence_v2_spec.md`](trait_persistence_v2_spec.md) — the design spec.
-- [`trait_persistence_v2_phase1.ipynb`](trait_persistence_v2_phase1.ipynb) — Phase 1: calibration + screening.
+- **Primers (plain-language):** [`PHASE2_PRIMER.md`](PHASE2_PRIMER.md) walks through the Phase 2 run.
+- **Notebooks (Colab T4):** [`trait_persistence_v2_phase1.ipynb`](trait_persistence_v2_phase1.ipynb) (calibration + screening),
+  [`trait_persistence_v2_phase2.ipynb`](trait_persistence_v2_phase2.ipynb) (the cued sweep),
+  [`trait_persistence_v2_phase2ext.ipynb`](trait_persistence_v2_phase2ext.ipynb) (the §7a extension). Built by the matching `build_*.py`.
+- **Data + write-ups:** [`phase1/`](phase1/) (band + screening outputs, `PHASE1_NOTES.md`) and
+  [`phase2/`](phase2/) (the sweep + extension CSVs, `PHASE2_RESULTS.md`).
+- **Analysis:** [`analyze_phase2.py`](analyze_phase2.py) (primary) and
+  [`analyze_phase2ext.py`](analyze_phase2ext.py) (combined trend). Pure stdlib; exact Wilcoxon.
 
-## Running Phase 1
+## Running the notebooks
 
-Runs on a Colab **T4 GPU**; no local GPU needed.
+Each runs on a Colab **T4 GPU**; no local GPU needed. Open a notebook from GitHub, set
+`Runtime → Change runtime type → T4 GPU`, and clone this repo in a first cell so the stimuli and the
+Phase 1 outputs are present:
 
-1. Open `trait_persistence_v2_phase1.ipynb` in Colab; `Runtime → Change runtime type → T4 GPU`.
-2. Upload `trait_persistence_v2_stimuli.py` alongside it (folder icon, left sidebar), or clone this repo.
-3. `google/gemma-3-4b-it` is gated: accept the license on Hugging Face, then add your token as a
-   Colab secret named `HF_token` (key icon; enable notebook access).
-4. Run top to bottom, then download every file listed in the final cell.
+```
+!git clone https://github.com/manu-scriptum/j-lens-trait-persistence-test-v2.git
+%cd j-lens-trait-persistence-test-v2
+```
 
-Two outputs to actually read rather than scroll past: the **single-token report** (a trait down to
-fewer than 4 surviving lexicon entries is underpowered and must be flagged) and the **screening
-table** (which characters passed, and whether the valence balance survived).
+`google/gemma-3-4b-it` is gated: accept the license on Hugging Face, then add your token as a Colab
+secret named `HF_token` (key icon; enable notebook access). Run top to bottom and download the outputs
+listed in the final cell. Phase 2 and the extension read the band and roster from `phase1/`, never
+from a literal. (Note: jlens truncates at 512 tokens by default; the extension notebook raises
+`max_seq_len` so the long d=30 sequences are not silently cut — see the fix in `build_phase2ext.py`.)
 
 ## Registered but not run
 
@@ -121,8 +163,9 @@ appears in Cue A in every prefix — so Q4 needs a different second entity if un
 
 A small measurement on one open 4B model through one interpretability tool. It probes
 **trait-concept retrievability in the residual stream via the J-lens** — not "the global workspace"
-in any theory-laden sense. n = 8 is small; per-character results are reported alongside any
-aggregate, and anything that does not clear a pre-registered criterion is described in descriptive
-language, not as a finding.
+in any theory-laden sense. n = 7 (screening dropped 3 of 10, no back-fill) is small and single-item
+medians are draggable by one character — Elias demonstrably drags this one; per-character results are
+reported alongside any aggregate, and anything that does not clear a pre-registered criterion is
+described in descriptive language, not as a finding.
 
 `LICENSE` (MIT) — code. `LICENSE-docs` (CC BY 4.0) — writeup and data.
