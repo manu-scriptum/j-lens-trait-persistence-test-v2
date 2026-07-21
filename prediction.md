@@ -558,3 +558,79 @@ would be a clean start, not a rewrite. The prior "out of reach / proper-lab / el
 
 Nothing about the completed Q1 / Q2 / Q5 run changes. The held-latent-vs-held-scene question remains
 **unanswered by this run** — it is what the now-runnable Q3 exists to settle.
+
+### 2026-07-21 (post-run) — Q3 implementation pinned (Phase 3 build)
+
+**Data visible at the time: the full primary + §7a-extension results — but no Q3 / ablation data of
+any kind.** This entry pins the implementation details Q3 needs to *run*, and it is written and
+committed **before a single ablation number exists**. Per the discipline of the 2026-07-20 entries,
+registering a to-be-run procedure pre-data costs nothing epistemically. Nothing frozen is changed: the
+§3 Q3 decision rule and the §7b mask-check gate are used **verbatim**. What is pinned here is *how* the
+scene span, the control span, the mask, and the gate are realised in code, so those realisations are on
+record before any result and cannot be tuned to one.
+
+The choices marked **(researcher call)** were decided by the researcher on 2026-07-21 when the build
+was scoped; the rest follow directly from §3 / §7b / spec D5 and are recorded for completeness.
+
+1. **Decision checkpoint — pinned to d = 10, Cue B (researcher call).** §3's "reintroduction Cue B
+   checkpoint" is realised as **distance d = 10** (the D3 reintroduction — the primary run's maximum
+   distance, whose prefix is byte-identical to Phase 2). The §3 held-latent / held-scene verdict is
+   computed **only here**, one verdict per character. The ablation is *also* run at
+   d ∈ {0, 1, 2, 4, 7, 30} as **walled-off exploratory context that carries no verdict**; the d = 30
+   cell exists specifically to check the pinned verdict is not an artifact of the d = 10 distance. (The
+   d = 30 reads reuse the §7a extension filler, indices 0–29, and the `max_seq_len` fix from
+   `build_phase2ext.py`.) No §3 threshold changes; only the checkpoint at which the frozen rule is
+   evaluated is named.
+
+2. **Scene span (condition ii) = the inferred trigger sentence's tokens.** The masked span is the token
+   subsequence of `char["inferred"]` located inside the full text (found by matching the leading-space
+   encoding, the same way Cue A locates the name). Nothing else is masked.
+
+3. **Matched control span (condition iii) = the closest-length filler sentence.** Among the filler
+   sentences actually present at that distance, the one whose token-span length is nearest the scene
+   span's length is masked, at its own positions — "an equally sized irrelevant span" (§3). Ties break
+   to the earliest such sentence. **At d = 0 no filler is present, so condition iii is undefined and not
+   evaluated there;** d = 0 is exploratory only, and the pinned d = 10 checkpoint always has ten filler
+   sentences to match against.
+
+4. **Mask mechanism = additive −∞ on attention logits, every layer and head (§7b preferred; not
+   V-zeroing).** The model is loaded with `attn_implementation="eager"` so an additive attention bias is
+   honoured; forward pre-hooks on every decoder `self_attn` module set the masked key columns to the
+   dtype minimum for all query rows, at every layer and head. This is the §7b *preferred* mechanism
+   realised literally — **V-zeroing is not used**, so the §7b deviation clause does not apply. Loading in
+   eager is a requirement of this mechanism, not a deviation from it, and is printed into the run output.
+   The hooks are active during **both** lens reads (the J-lens `apply` pass and the logit-lens
+   hidden-states pass share the same `hf_model`), so the ablation is in force for every measurement.
+
+5. **Two independent instrument checks that the mask does what it claims, run before any trait number
+   is trusted:**
+   - **Mechanistic:** one `output_attentions=True` forward pass with the hook active must show
+     attention probability from every query position to every masked key column ≈ 0 across all
+     band layers and heads. This proves "attention logits → −∞" took effect, independent of meaning.
+   - **Semantic — the §7b gate itself.** A `"What did NAME do?"` probe (`S.scene_probe`) reads the best
+     rank across per-character **scene keywords** (`S.SCENE_KEYWORDS`, declared in
+     `trait_persistence_v2_stimuli.py`; each a single content word resident only in the inferred
+     sentence, absent from opening and every filler, never a trait word — string-checked in that file,
+     single-token-checked at run time). The gate **passes for a character** iff, mirroring §3's own
+     ratio logic applied to the *scene* rather than the *trait*: baseline scene-keyword best rank
+     `R^kw_i ≤ 50` (the scene is reportable at all — else the probe is too weak to gate), **and**
+     scene-masking removes it (`R^kw_ii / R^kw_i ≥ 5.0`), **and** the matched control mask spares it
+     (`R^kw_iii / R^kw_i ≤ 2.0`). **If the gate fails for a character, that character's Q3 is reported
+     `not-run`, never a null** (§7b) — a failed mask produces exactly the collapse that would otherwise
+     read as the more-surprising outcome (b). These thresholds (5.0 / 2.0 / ≤50) are the §3 Q3 numbers
+     reused on the scene keyword; they are pinned here, pre-data.
+
+6. **Symmetric direct-arm test included (researcher call; spec D5).** On the `direct` arm at the same
+   checkpoints, the **trait-word span** is masked and the drop in direct-arm trait retrievability is
+   measured — "how much of stated-arm retrieval is the literal symbol" (D5). The **tracer-word span** is
+   masked as an equally-sized single-token(-ish) matched control. This is **descriptive and carries no
+   part of the §3 held-latent / held-scene verdict**, which is an inferred-arm quantity; it is the
+   mechanistic counterpart, reported alongside.
+
+7. **New stimulus content registered here:** `SCENE_KEYWORDS` (7 survivors, 26 keywords total after the
+   file's own string self-checks dropped `covered`/`opens`/`sits` for leaking into filler) and
+   `scene_probe(name)` in `trait_persistence_v2_stimuli.py`. Both are for the mask-check gate only, do
+   not touch the trait measure, and were written for scene-reporting before any ablation read exists.
+
+Build artifacts for this arm: `build_phase3.py` → `trait_persistence_v2_phase3.ipynb` (the run) and
+`analyze_phase3.py` (the frozen-rule analysis, off-GPU). Same file discipline as Phases 1–2.

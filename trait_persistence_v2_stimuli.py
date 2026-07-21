@@ -194,6 +194,39 @@ def cue_b(name):
     return f" What kind of person is {name}? {name} is"
 
 
+# --- Q3 scene-report keywords + probe (Phase 3 / prediction.md §9 2026-07-21 "Q3 implementation") --
+# The §7b mask-check gate needs an independent, semantic proof that the scene ablation actually
+# removed the behavioural scene rather than merely breaking the model: under scene-masking the model
+# can no longer report "what did NAME do?", while under the matched-filler control mask it still can.
+#
+# Each keyword is a CONTENT word resident in that character's `inferred` (behavioural) sentence ONLY —
+# absent from the shared opening and from every filler sentence, and never a trait-lexicon word — so
+# recovering it at the scene probe signals the scene is still readable. Single-token (leading-space)
+# filtering happens at run time exactly as for TRAIT_LEXICONS: multi-token entries are dropped and
+# logged, never substituted, and the measure is best rank across the surviving set. Declared for the
+# seven Phase-2 survivors (the only characters Q3 runs on); the three screened-out candidates need none.
+# Chosen for scene-reporting BEFORE any Q3 ablation data exists — they cannot be tuned to a result
+# that does not yet exist. See prediction.md §9.
+SCENE_KEYWORDS = {
+    "Maria": ["rent", "colleague", "difference"],
+    "Nadia": ["stack", "pinned", "worker", "climbed", "load"],
+    "Simon": ["shipment", "learn", "holds"],
+    "Elias": ["firm", "pay", "stayed", "lean"],
+    "Greta": ["customer", "leans", "writes"],
+    "Bruno": ["shift", "walk", "raised"],
+    "Marek": ["argument", "door", "voices", "slipped", "waited"],
+}
+
+
+def scene_probe(name):
+    """Mask-check probe (prediction.md §7b): 'can the model still report the scene?'
+
+    Read at the FINAL position, where the next token is where the model would begin recounting what
+    the character did. Scene-keyword best rank here, under each ablation condition, drives the gate.
+    """
+    return f" What did {name} do? {name}"
+
+
 def build_prefix(char, arm, distance):
     """Text through `distance` filler sentences. Identical across arms except the trigger."""
     if arm not in ARMS:
@@ -247,6 +280,28 @@ if __name__ == "__main__":
         assert not _hits, f"filler[{_i}] leaks {_hits}: {_s!r}"
     print(f"\nfiller: {len(FILLER_SENTENCES)} sentences, all trait/tracer/name-neutral (checked). "
           f"primary d={DISTANCES}, §7a extension d={EXT_DISTANCES}")
+
+    # Q3 scene keywords (Phase 3): each must sit in its character's inferred sentence, be absent from
+    # the shared opening and from every filler sentence, and not be a trait-lexicon word. (Single-token
+    # filtering is a run-time tokenizer check, not asserted here.)
+    for _c in CANDIDATES:
+        if _c["name"] not in SCENE_KEYWORDS:
+            continue
+        _inf, _open = _c["inferred"].lower(), _c["opening"].lower()
+        _traitset = {w.lower() for w in TRAIT_LEXICONS[_c["trait"]]}
+        for _kw in SCENE_KEYWORDS[_c["name"]]:
+            _k = _kw.lower()
+            assert re.search(rf"\b{re.escape(_k)}\b", _inf), \
+                f"{_c['name']}: scene keyword {_kw!r} not in inferred sentence"
+            assert not re.search(rf"\b{re.escape(_k)}\b", _open), \
+                f"{_c['name']}: scene keyword {_kw!r} leaks into the shared opening"
+            assert _k not in _traitset, f"{_c['name']}: scene keyword {_kw!r} is a trait-lexicon word"
+            for _i, _s in enumerate(FILLER_SENTENCES):
+                assert not re.search(rf"\b{re.escape(_k)}\b", _s.lower()), \
+                    f"{_c['name']}: scene keyword {_kw!r} leaks into filler[{_i}]: {_s!r}"
+    _n_kw = sum(len(v) for v in SCENE_KEYWORDS.values())
+    print(f"Q3 scene keywords: {_n_kw} across {len(SCENE_KEYWORDS)} survivors, "
+          f"all scene-resident and opening/filler/trait-neutral (checked). probe = {scene_probe('NAME')!r}")
 
     print("\nExample probe (Maria / inferred / d=2 / cue_b):")
     print(" ", build_probe(by_name("Maria"), "inferred", 2, "cue_b"))

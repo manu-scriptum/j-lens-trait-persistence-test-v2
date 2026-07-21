@@ -42,7 +42,7 @@ opening (now neutralised).
 | **Q1** | Under *cued* retrieval, does a stated trait stay more retrievable than an inferred one across intervening text? | answered | **no detectable difference** (Wilcoxon p=0.81; holds to d=30) |
 | **Q2** | Is the stated arm's persistence trait-specific, or generic token-echo? | answered | **not word-echo** — content-specific (tracer near its own floor) |
 | **Q5** | Does the J-lens read what the logit lens can't? | answered | mixed, n=3: clean for Greta, partial Nadia, none Elias |
-| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | **deferred — not this run** | — |
+| **Q3** | Is a retrievable inferred trait a **held latent** or a **held scene**? | **built — ready to run** (not yet run) | — |
 | **Q4** | Does an inferred trait stay bound to the right entity under interference? | stub; not this run | — |
 
 **Q3 is deferred, and that is deliberate.** Answering it means ablating the behavioural sentence's
@@ -130,14 +130,19 @@ be told apart from an instrument that simply can't see at these depths.
 - [`trait_persistence_v2_stimuli.py`](trait_persistence_v2_stimuli.py) — canonical stimuli, lexicons, tracers, cues, filler. Part of the
   pre-registration, not implementation; the notebooks import it rather than restating any string.
 - [`trait_persistence_v2_spec.md`](trait_persistence_v2_spec.md) — the design spec.
-- **Primers (plain-language):** [`PHASE2_PRIMER.md`](PHASE2_PRIMER.md) walks through the Phase 2 run.
+- **Primers (plain-language):** [`PHASE2_PRIMER.md`](PHASE2_PRIMER.md) walks through the Phase 2 run;
+  [`PHASE3_PRIMER.md`](PHASE3_PRIMER.md) walks through the Q3 ablation.
 - **Notebooks (Colab T4):** [`trait_persistence_v2_phase1.ipynb`](trait_persistence_v2_phase1.ipynb) (calibration + screening),
   [`trait_persistence_v2_phase2.ipynb`](trait_persistence_v2_phase2.ipynb) (the cued sweep),
-  [`trait_persistence_v2_phase2ext.ipynb`](trait_persistence_v2_phase2ext.ipynb) (the §7a extension). Built by the matching `build_*.py`.
+  [`trait_persistence_v2_phase2ext.ipynb`](trait_persistence_v2_phase2ext.ipynb) (the §7a extension),
+  [`trait_persistence_v2_phase3.ipynb`](trait_persistence_v2_phase3.ipynb) (the Q3 KV-ablation — built, not yet run).
+  Built by the matching `build_*.py`.
 - **Data + write-ups:** [`phase1/`](phase1/) (band + screening outputs, `PHASE1_NOTES.md`) and
-  [`phase2/`](phase2/) (the sweep + extension CSVs, `PHASE2_RESULTS.md`).
+  [`phase2/`](phase2/) (the sweep + extension CSVs, `PHASE2_RESULTS.md`). Phase 3 outputs land in
+  `phase3/` after the run.
 - **Analysis:** [`analyze_phase2.py`](analyze_phase2.py) (primary) and
-  [`analyze_phase2ext.py`](analyze_phase2ext.py) (combined trend). Pure stdlib; exact Wilcoxon.
+  [`analyze_phase2ext.py`](analyze_phase2ext.py) (combined trend); [`analyze_phase3.py`](analyze_phase3.py)
+  (the Q3 verdict behind the §7b gate). Pure stdlib; exact Wilcoxon.
 
 ## Running the notebooks
 
@@ -169,6 +174,15 @@ manufacture the more interesting result.
 > ablation runs on this setup (forward pre-hooks, the §7b mechanism). Q3 has moved from *registered
 > but not run* to **the planned next arm**; the frozen §3/§7b machinery above governs it unchanged.
 > See `prediction.md` §9.
+>
+> **Update (2026-07-21, Q3 build):** Q3 is now **built and ready to run** — not yet run, no results.
+> [`trait_persistence_v2_phase3.ipynb`](trait_persistence_v2_phase3.ipynb) (from
+> [`build_phase3.py`](build_phase3.py)) does the ablation on Colab; [`analyze_phase3.py`](analyze_phase3.py)
+> applies the frozen §3 verdict behind the §7b gate. The concrete realisations — d=10 decision
+> checkpoint, scene span, matched-filler control, the eager-attention mask hook, the scene-keyword gate
+> thresholds, the symmetric direct-arm test — are pinned in `prediction.md` §9 ("Q3 implementation
+> pinned"), committed **before any ablation number exists**. Plain-language walkthrough:
+> [`PHASE3_PRIMER.md`](PHASE3_PRIMER.md).
 
 Q4 (two-entity interference) is a documented stub. Note that "Tom" is spent as a neutral name — it
 appears in Cue A in every prefix — so Q4 needs a different second entity if unstubbed.
