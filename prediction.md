@@ -56,6 +56,8 @@ move once data exists.
 Q3's KV-ablation requires attention/KV-patching scaffolding and its own validation — proving the
 ablation removed the intended trace rather than simply breaking the model. That is an *intervention*,
 not a readout, and it is out of reach of a Colab-T4 read-only lens rig.
+**[Superseded 2026-07-21 (post-run) — this was a misjudgement; the ablation *can* be run on this
+setup after all. Deferral lifted; see §9.]**
 
 This is not a new judgement. v1's own `prediction.md` reached it first, in its "Design spec for a
 future run" section, before the v2 spec existed:
@@ -533,3 +535,26 @@ tuned to an extension result.
 distance set changes, to `EXT_DISTANCES = [15, 20, 30]`. The extension run is
 `trait_persistence_v2_phase2ext.ipynb`; its reads are analysed together with the primary sweep across
 d ∈ {4, 7, 10, 15, 20, 30} to read the trend.
+
+### 2026-07-21 (post-run) — Q3 feasibility revised: the KV-ablation can run here after all
+
+**Data visible at the time: the full primary + §7a-extension results.** This changes no result and no
+frozen criterion — it lifts a *feasibility* judgement, and it is logged rather than silently applied,
+same as everything else.
+
+Q3 was deferred throughout this document (§1a, and the 2026-07-20 amendments) on the belief that a
+KV-ablation was **out of reach of a read-only Colab-T4 lens rig** — an *intervention* needing
+attention/KV-patching scaffolding that the setup did not have. **That belief was wrong.** The
+researcher underestimated what this setup can do; on reviewing the results, **Fable pointed out that a
+full KV-ablation of `gemma-3-4b-it` is in fact runnable here** (forward pre-hooks on the HF attention
+modules — exactly the mechanism §7b already pins). We are, for this purpose, a lab.
+
+**Consequence.** Q3's *infeasibility* deferral is **lifted**. Q3 becomes the **planned next arm**. What
+does **not** change: its decision rule (§3, retained verbatim) and its implementation gate (§7b) —
+including the load-bearing mask-check that makes a failed mask report **not-run, never a null**, so a
+bug cannot manufacture the more-surprising outcome (b). Those were kept frozen precisely so this moment
+would be a clean start, not a rewrite. The prior "out of reach / proper-lab / elsewhere" language in
+§1a and above stays as the dated record of what was believed; it is superseded, not deleted.
+
+Nothing about the completed Q1 / Q2 / Q5 run changes. The held-latent-vs-held-scene question remains
+**unanswered by this run** — it is what the now-runnable Q3 exists to settle.

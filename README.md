@@ -51,6 +51,13 @@ validation that the ablation removed the trace rather than just breaking the mod
 reach of a read-only lens rig on a Colab T4. v1's own follow-up spec reached this conclusion first:
 *"park the causal ablation as a proper-lab step, not the immediate next run."*
 
+> **Update (2026-07-21, post-run):** the "out of reach / proper lab" call was a misjudgement. A full
+> KV-ablation of `gemma-3-4b-it` *is* runnable on this setup — forward pre-hooks on the attention
+> modules, the mechanism `prediction.md` §7b already pins. The researcher underestimated the setup;
+> Fable caught it. **Q3's infeasibility deferral is lifted and the ablation is the planned next arm**
+> — decision rule (§3) and mask-check gate (§7b) already frozen and unchanged. The text above stays as
+> the dated record of what was believed. See `prediction.md` §9 (2026-07-21, post-run).
+
 So this run is **the corrected replication, done properly** — which v1 could not do, because it could
 measure cued retrievability at exactly one accidental checkpoint out of thirteen. Q1's cued sweep
 across distance also delivers the *distance* half of the "differential fragility" read v1 proposed as
@@ -157,6 +164,11 @@ keeping visible: a failed attention mask produces a null **indistinguishable fro
 which is the more surprising of the two findings — so D5 is reportable only if the mask demonstrably
 removes the scene, and a failed check reports **not-run, never a null**. Without that, a bug could
 manufacture the more interesting result.
+
+> **Update (2026-07-21, post-run):** "if the tooling ever becomes available" — it already is. The
+> ablation runs on this setup (forward pre-hooks, the §7b mechanism). Q3 has moved from *registered
+> but not run* to **the planned next arm**; the frozen §3/§7b machinery above governs it unchanged.
+> See `prediction.md` §9.
 
 Q4 (two-entity interference) is a documented stub. Note that "Tom" is spent as a neutral name — it
 appears in Cue A in every prefix — so Q4 needs a different second entity if unstubbed.

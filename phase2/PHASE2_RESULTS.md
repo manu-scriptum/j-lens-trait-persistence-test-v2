@@ -222,6 +222,12 @@ a privileged representation in the model.
 continuously across the filler, the cleanest in-reach test of *held vs re-derived* — and, eventually,
 the KV-ablation in a proper lab.
 
+> **Correction (2026-07-21, post-run):** "in a proper lab" was a misjudgement. The KV-ablation (Q3)
+> turns out to be runnable on *this* setup — forward pre-hooks on the attention modules, the mechanism
+> `prediction.md` §7b already pins. The researcher underestimated the setup; Fable caught it. Q3 is now
+> the planned next arm; the held-vs-re-derived question it settles is no longer waiting on someone
+> else's lab. See `prediction.md` §9 (2026-07-21, post-run).
+
 ## Files
 
 | file | what it is |

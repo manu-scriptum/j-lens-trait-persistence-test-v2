@@ -117,6 +117,12 @@ Two deeper questions are parked, on purpose:
 - **Does the model mix up two characters' traits?** A second-character interference test — a separate
   future run.
 
+> **Update (2026-07-21):** the first one — "left for a proper lab" — turned out to be wrong, in a good
+> way. The switching-off (a KV-ablation) *can* be done on this very setup; the researcher underestimated
+> what was possible and Fable pointed it out. So the held-in-mind-vs-rebuilt question is now the
+> **planned next experiment**, run here rather than parked. (Getting a call wrong and fixing it in the
+> open is the job, not an embarrassment — same as v1.)
+
 So this run is the honest, corrected version of v1's core question — done properly this time — and
 nothing is dressed up as more than that.
 
