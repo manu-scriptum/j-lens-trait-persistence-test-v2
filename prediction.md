@@ -150,7 +150,7 @@ not commensurable).
 `ratio(arm, d) = R(arm, d, CueB) / R(control, d, CueB)`. Outcome (1) is supported if the direct arm's
 ratio is lower than the inferred arm's for a majority of characters at a majority of distances, **and**
 a Wilcoxon signed-rank test on the per-character paired ratios (pooled over d, then per-d as a
-secondary breakdown) reaches p < 0.05. With n = 8, this test is weak; if it does not clear, the result
+secondary breakdown) reaches p < 0.05. With n = 8 [n = 7 for this run — §9 2026-07-21 (later)], this test is weak; if it does not clear, the result
 is reported descriptively as direction-and-consistency, not as a finding.
 
 **d0 is excluded from all persistence claims for the direct arm** — at d0 the trait word is surface
@@ -233,7 +233,7 @@ the J-lens earns its place, via the `{direct, inferred} × {logit, J-lens}` cont
 informative cell is the **inferred** arm: it is the one whose trait was never tokenised, so a plain
 unembedding readout has no symbol to project. If the J-lens surfaces it and the logit lens does not —
 with the logit lens having passed its positive control, so the null is interpretable — that is the
-instrument reading unexpressed latent content. Report per character; n = 8, descriptive.
+instrument reading unexpressed latent content. Report per character; n = 8 [n = 7 for this run — §9 2026-07-21 (later)], descriptive.
 
 ## 5. Stimuli
 
@@ -335,7 +335,7 @@ v2 (§7). Chasing its half-life would spend forward passes on Q2's null hypothes
   did the median hide a sub-band signal? — can be repeated.
 - Top-20 lens vocabulary stored at every checkpoint. v1's post-hoc correction was only possible
   because this existed.
-- If a result hinges on one character, that is stated. n = 8 medians are draggable by one item.
+- If a result hinges on one character, that is stated. n = 8 [n = 7 for this run — §9 2026-07-21 (later)] medians are draggable by one item.
 - If the lens shows nothing anywhere: check band calibration and tokenizer leading-space forms before
   concluding absence. Instrument first, phenomenon second.
 - Anything not clearing a pre-registered criterion is described in descriptive language, not as a
@@ -468,3 +468,33 @@ form on the real `google/gemma-3-4b-it` tokenizer (`tok.encode(" "+w, add_specia
 distinct tokenizer build, which is why the pre-check was not treated as authoritative.) The swap is now
 fully registered; no follow-up owed. `trait_persistence_v2_stimuli.py` self-checks pass (tracer present
 in its direct trigger; no trait word leaks into inferred/control).
+
+### 2026-07-21 (later same day) — run n fixed at 7 (Phase 1 screening outcome)
+
+**Data visible at the time: Phase 1 (calibration + screening + tokenizer check). No Phase 2 —
+no Q1 / Q2 / Q5 data exists.**
+
+Phase 1 applied the frozen D0 screening gate (§3) to the ten pre-declared candidates. Seven passed;
+three failed and are out with **no back-fill** (§5): Viktor (control leaked cruelty, ratio 3.26), Otto
+(weak inference, R = 251 > 200), Priya (control not trait-neutral, ratio 1.37). The surviving Phase 2
+roster is **n = 7**: Maria (generous), Nadia (brave), Simon (curious), Elias (loyal) — 4 positive — and
+Greta (dishonest), Bruno (lazy), Marek (cowardly) — 3 negative.
+
+**This is a determined outcome, not a choice.** n = 7 is what the pre-registered gate returned on the
+screening data; it was not selected, and no threshold was moved to reach it. 7 ≥ 5, so the §3 failure
+rule does not trigger and the run proceeds without loosening the gate. The 4:4 valence target of §5 is
+not met (**4:3**, one negative trait short); per §5 this is reported and the sweep runs on survivors
+rather than on back-filled replacements chosen after seeing data. The imbalance is carried as a
+reporting caveat, not corrected.
+
+**Consequence for the decision rules.** Wherever §3 and §4a fix the sample at "n = 8", read **n = 7**
+for this run (marked inline at each occurrence). No numeric threshold in §3 changes — only the n they
+are evaluated over. Specifically: the §3 Q1 Wilcoxon is now over 7 paired ratios (already registered as
+weak at 8, weaker at 7 — if it does not clear, the direction-and-consistency descriptive fallback
+governs, as already written); §4a / Q5 is per character over 7; the §3 "draggable by one item" caution
+is now 1-in-7.
+
+**Why this costs nothing on Q1 / Q2 / Q5.** The roster was set by the D0 gate, which reads only the
+inferred and control arms against the trait lexicon at d0. It is blind to persistence at d ≥ 1 (Q1), to
+the tracer stream (Q2), and to the logit-vs-J-lens contrast (Q5) — none of which has been measured. The
+n therefore cannot have been tuned to a result that does not yet exist.
