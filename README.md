@@ -24,11 +24,16 @@ from the scene it originally read?
 
 Measured with the **Jacobian lens** on `google/gemma-3-4b-it`.
 
-> **Status: complete (Q1 + Q2 + Q5), run 2026-07-21.** Pre-registration committed before any code.
-> Phase 1 (calibration + screening) and Phase 2 (the cued sweep + the §7a extension to d=30) have run
-> on Colab T4. **Headline: no detectable stated-vs-inferred retrievability difference at any distance
-> — and, contra v1, the inferred trait does not collapse.** Full write-up in
-> [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md). Q3 and Q4 remain deferred by design.
+> **Status: complete (Q1 + Q2 + Q3 + Q5), run 2026-07-21.** Pre-registration committed before any code.
+> Phase 1 (calibration + screening), Phase 2 (the cued sweep + the §7a extension to d=30), Phase 3 (the
+> Q3 KV-ablation) and Phase 3b (its re-run with a corrected, pre-registered gate) have all run on Colab
+> T4. **Two headlines.** Under cued retrieval there is no detectable stated-vs-inferred retrievability
+> difference at any distance, and — contra v1 — the inferred trait does not collapse
+> ([`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md)). The ablation then explains why: **neither
+> trait is stored.** Both are reconstructed on demand from source text still visible in context — the
+> stated one from its literal word, the inferred one from its behavioural scene. **Held scene, 5/7
+> certified, 0 held-latent** ([`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md)). Q4 remains
+> deferred by design.
 
 This supersedes
 [`j-lens-trait-persistence-test`](https://github.com/manu-scriptum/j-lens-trait-persistence-test)
@@ -173,6 +178,11 @@ reach of a read-only lens rig on a Colab T4. v1's own follow-up spec reached thi
 > Fable caught it. **Q3's infeasibility deferral is lifted and the ablation is the planned next arm**
 > — decision rule (§3) and mask-check gate (§7b) already frozen and unchanged. The text above stays as
 > the dated record of what was believed. See `prediction.md` §9 (2026-07-21, post-run).
+>
+> **Update (2026-07-21, later): Q3 has run and is answered — held scene.** Twice: the ablation
+> ([`phase3/`](phase3/)) and a re-run with a corrected, pre-registered gate
+> ([`phase3b/`](phase3b/), the certified verdict). Everything above is kept as the dated record of a
+> feasibility call that was wrong, and of the reasoning that corrected it.
 
 So this run is **the corrected replication, done properly** — which v1 could not do, because it could
 measure cued retrievability at exactly one accidental checkpoint out of thirteen. Q1's cued sweep
@@ -213,14 +223,21 @@ in [`phase2/PHASE2_RESULTS.md`](phase2/PHASE2_RESULTS.md).
 **No held-latent-vs-held-scene claim is drawn** (Q3 deferred). The natural next run is v1's direction
 probe, above.
 
-> **Update (2026-07-21) — Q3 has since run.** The KV-ablation answers it: **held scene.** Masking the
-> behavioural sentence's attention keys collapses inferred-trait retrievability (30–172× at d=10) while
-> an equally sized filler ablation does nothing; **0 of 7 characters show a held latent.** The
-> symmetric direct-arm test shows the *stated* trait is equally dependent on its literal token (median
-> ×56 when masked, ×0.90 for a neutral word). So Phase 2's null reads as **"no difference because
-> neither is stored"** — both arms are reconstructed on demand from source text that never left the
-> context. Full write-up, including a documented gate flaw that cost three certifications:
-> [`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md).
+> **Update (2026-07-21) — Q3 has since run, twice.** The KV-ablation answers it: **held scene.** Masking
+> the behavioural sentence's attention keys collapses inferred-trait retrievability (30–172× at d=10)
+> while an equally sized filler ablation does nothing (control ratio ≈ 1.0 for all 7); **0 of 7
+> characters show a held latent**, at any distance, under any scoring. The symmetric direct-arm test
+> shows the *stated* trait is equally dependent on its literal token (median ×56 when masked, ×0.90 for
+> a neutral word). So Phase 2's null reads as **"no difference because neither is stored"** — both arms
+> are reconstructed on demand from source text that never left the context.
+>
+> The first run's gate was flawed and cost three certifications, which is documented rather than patched
+> ([`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md)); the re-run with a corrected, pre-registered
+> gate is the **certified verdict — 5/7 held scene, 7/7 registered expectations matched, replication
+> exact** ([`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md)).
+>
+> The direction probe below remains the right next step regardless: this measures *retrievability*, and
+> "not retrievable without the scene" is not "not represented".
 
 ## Design
 
@@ -260,15 +277,19 @@ be told apart from an instrument that simply can't see at these depths.
 - **Notebooks (Colab T4):** [`trait_persistence_v2_phase1.ipynb`](trait_persistence_v2_phase1.ipynb) (calibration + screening),
   [`trait_persistence_v2_phase2.ipynb`](trait_persistence_v2_phase2.ipynb) (the cued sweep),
   [`trait_persistence_v2_phase2ext.ipynb`](trait_persistence_v2_phase2ext.ipynb) (the §7a extension),
-  [`trait_persistence_v2_phase3.ipynb`](trait_persistence_v2_phase3.ipynb) (the Q3 KV-ablation — built, not yet run).
-  Built by the matching `build_*.py`.
+  [`trait_persistence_v2_phase3.ipynb`](trait_persistence_v2_phase3.ipynb) (the Q3 KV-ablation),
+  [`trait_persistence_v2_phase3b.ipynb`](trait_persistence_v2_phase3b.ipynb) (the Q3 re-run with the
+  corrected gate). Built by the matching `build_*.py`.
 - **Data + write-ups:** [`phase1/`](phase1/) (band + screening outputs, `PHASE1_NOTES.md`),
   [`phase2/`](phase2/) (the sweep + extension CSVs, `PHASE2_RESULTS.md`), and
-  [`phase3/`](phase3/) (the ablation CSVs, [`PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md)).
+  [`phase3/`](phase3/) (the ablation CSVs, [`PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md)), and
+  [`phase3b/`](phase3b/) (the re-run CSVs, [`PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md) — **the
+  certified verdict**).
 - **Analysis:** [`analyze_phase2.py`](analyze_phase2.py) (primary) and
   [`analyze_phase2ext.py`](analyze_phase2ext.py) (combined trend); [`analyze_phase3.py`](analyze_phase3.py)
-  (the Q3 verdict behind the §7b gate) and [`analyze_phase3_posthoc.py`](analyze_phase3_posthoc.py)
-  (the labelled post-hoc gate re-scoring). Pure stdlib; exact Wilcoxon.
+  (the Q3 verdict behind the frozen §7b gate), [`analyze_phase3_posthoc.py`](analyze_phase3_posthoc.py)
+  (the labelled post-hoc gate re-scoring), and [`analyze_phase3b.py`](analyze_phase3b.py) (both gates,
+  the replication check, and the §9 registered-expectations check). Pure stdlib; exact Wilcoxon.
 
 ## Running the notebooks
 
@@ -283,35 +304,56 @@ Phase 1 outputs are present:
 
 `google/gemma-3-4b-it` is gated: accept the license on Hugging Face, then add your token as a Colab
 secret named `HF_token` (key icon; enable notebook access). Run top to bottom and download the outputs
-listed in the final cell. Phase 2 and the extension read the band and roster from `phase1/`, never
-from a literal. (Note: jlens truncates at 512 tokens by default; the extension notebook raises
-`max_seq_len` so the long d=30 sequences are not silently cut — see the fix in `build_phase2ext.py`.)
+listed in the final cell. Every phase after the first reads the band and roster from `phase1/`, never
+from a literal, so a re-run cannot silently drift from what Phase 1 decided.
 
-## Registered but not run
+Two implementation notes worth knowing before you re-run anything here:
+- jlens truncates at 512 tokens by default; the extension and ablation notebooks raise `max_seq_len` so
+  the long d=30 sequences are not silently cut (see the fix in `build_phase2ext.py`).
+- the ablation notebooks load the model with `attn_implementation="eager"`, which the §7b mask
+  mechanism **requires** — a faster attention path computes the same attention but gives the additive
+  mask nowhere to be injected, silently turning the ablation into a no-op. The mechanistic mask check
+  in those notebooks halts the run if that happens.
 
-Q3's KV-ablation stays fully specified in `prediction.md` (§3 decision rule, §7b implementation gate)
-so it can be picked up unchanged if the tooling ever becomes available. The gate is the part worth
-keeping visible: a failed attention mask produces a null **indistinguishable from Q3 outcome (b)**,
-which is the more surprising of the two findings — so D5 is reportable only if the mask demonstrably
+## The Q3 gate, and why it is the part worth reading
+
+Q3's KV-ablation was specified long before it was runnable, and the **gate** was the reason to specify
+it carefully: a failed attention mask produces a null **indistinguishable from Q3 outcome (b)** — the
+more surprising of the two findings — so the ablation is reportable only if the mask demonstrably
 removes the scene, and a failed check reports **not-run, never a null**. Without that, a bug could
 manufacture the more interesting result.
 
-> **Update (2026-07-21, post-run):** "if the tooling ever becomes available" — it already is. The
-> ablation runs on this setup (forward pre-hooks, the §7b mechanism). Q3 has moved from *registered
-> but not run* to **the planned next arm**; the frozen §3/§7b machinery above governs it unchanged.
-> See `prediction.md` §9.
->
-> **Update (2026-07-21, Q3 build):** Q3 is now **built and ready to run** — not yet run, no results.
-> [`trait_persistence_v2_phase3.ipynb`](trait_persistence_v2_phase3.ipynb) (from
-> [`build_phase3.py`](build_phase3.py)) does the ablation on Colab; [`analyze_phase3.py`](analyze_phase3.py)
-> applies the frozen §3 verdict behind the §7b gate. The concrete realisations — d=10 decision
-> checkpoint, scene span, matched-filler control, the eager-attention mask hook, the scene-keyword gate
-> thresholds, the symmetric direct-arm test — are pinned in `prediction.md` §9 ("Q3 implementation
-> pinned"), committed **before any ablation number exists**. Plain-language walkthrough:
-> [`PHASE3_PRIMER.md`](PHASE3_PRIMER.md).
+That guard earned its keep twice, in opposite directions, and both are documented rather than patched
+over:
+
+- **Phase 3's gate was a bad proxy for its own criterion.** It scored scene-keyword rank at a *single*
+  position while §7b asks a behavioural question ("can the model still answer what NAME did?"). It
+  produced three false failures — characters whose masks demonstrably worked — and one probable false
+  pass. The three were reported **not-run** rather than promoted, and a post-hoc re-scoring was shipped
+  clearly labelled beside the frozen verdict. ([`phase3/PHASE3_RESULTS.md`](phase3/PHASE3_RESULTS.md) §3.)
+- **Phase 3b re-ran it with a corrected gate registered in advance**, together with the outcome it had
+  to produce: the character whose scene the probe never elicited had to **fail**, or the gate stood
+  accused of being merely permissive. It failed, all 7 registered expectations matched, and the trait
+  reads reproduced the first run **exactly** (0.0% deviation).
+  ([`phase3b/PHASE3B_RESULTS.md`](phase3b/PHASE3B_RESULTS.md).)
+
+A third check — "masking the whole story must wreck the trait read" — turned out to rest on a **false
+premise**, and investigating why produced the most useful methodological result in the project (§5a of
+the Phase 3b write-up): a rank measure reports the *winner of a competition*, so "the concept dropped"
+and "something else arrived" are indistinguishable unless you stored what took its place.
+
+Plain-language walkthrough of the ablation: [`PHASE3_PRIMER.md`](PHASE3_PRIMER.md).
+
+## Registered but not run
 
 Q4 (two-entity interference) is a documented stub. Note that "Tom" is spent as a neutral name — it
 appears in Cue A in every prefix — so Q4 needs a different second entity if unstubbed.
+
+v1's **direction probe** — reading the trait as a linear direction rather than a word — is the natural
+complement and is *not* run here. It matters because it could see a held representation that the
+vocabulary-projection lenses used throughout this repo structurally cannot: everything measured here is
+*disposition to say the trait word*, so "not retrievable without the scene" is not the same claim as
+"not represented". That is a separate pre-registration.
 
 ## Scope and honesty
 
