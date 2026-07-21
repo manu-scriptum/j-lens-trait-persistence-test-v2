@@ -1,0 +1,15 @@
+{
+  "survivors": [
+    "Greta",
+    "Simon",
+    "Bruno",
+    "Nadia",
+    "Marek",
+    "Maria",
+    "Elias"
+  ],
+  "n_positive": 4,
+  "n_negative": 3,
+  "gate_max_inferred_rank": 200,
+  "gate_min_control_ratio": 5.0
+}

@@ -175,6 +175,67 @@ def logit_lens_logits(text, layers, positions):
 """.strip()))
 
 cells.append(md(r"""
+### Validate the logit-lens wiring before trusting it
+
+The J-lens is pre-validated (spider-check + walkthrough, twice, on this model/lens). This logit
+wiring is **ours**, and on this exact stack a sibling project (`j-lens-self-recruitment-test`, same
+`gemma-3-4b-it` + `jlens@581d398`) once shipped it with a silent bug that decoded to plausible
+nonsense rather than crashing. `prediction.md` §4a makes the logit stream Q5's evidence, so it is
+checked here before any read. Two checks, both from that project's corrected version:
+
+1. **`LM_HEAD` on the final hidden state must reproduce the model's real next-token top-k** — confirms
+   `LM_HEAD` and the hidden-state indexing. **No `FINAL_NORM` in this check:** HF's decoder appends
+   `norm(h_final)` as the *last* `hidden_states` entry, so `hs[-1]` is already normed; applying
+   `FINAL_NORM` again is a double-RMSNorm, which is exactly what produced the sibling's junk. The
+   readout is unaffected either way — `logit_lens_logits` reads `hs[L+1]` for band layers only, never
+   that final entry — but the check has to index it correctly or it fails on its own bug.
+2. **Known-answer trajectory** — on `"…French capital city of"`, ` Paris` should climb into the top
+   in the late layers, with `FINAL_NORM` applied to the **raw** intermediates. That is the path the
+   readout actually uses, so this is what validates `FINAL_NORM`. It also previews where readable
+   content lives — a free cross-check on Part 1's calibrated band.
+
+Check (1) **raises** on failure: a bad logit channel voids every Q5 claim, so it must stop the run.
+""".strip()))
+
+cells.append(code(r"""
+_ptxt = "The Eiffel Tower stands in the French capital city of"
+_enc = tokenizer(_ptxt, return_tensors="pt").to(hf_model.device)
+with torch.no_grad():
+    _out = hf_model(**_enc, output_hidden_states=True)
+
+def _decode_ids(ids):
+    return [tokenizer.decode([i]) for i in ids]
+
+# Check (1): final hidden state -> model's own next-token ranking.
+# NO FINAL_NORM: hs[-1] is already normed (double-norm is the classic silent failure here).
+_real_logits = _out.logits[0, -1].float()
+_lens_logits = LM_HEAD(_out.hidden_states[-1][0, -1].unsqueeze(0))[0].float()
+_real = _decode_ids(_real_logits.topk(8).indices.tolist())
+_llf  = _decode_ids(_lens_logits.topk(8).indices.tolist())
+_maxdiff = (_lens_logits - _real_logits).abs().max().item()
+print("real model next-token top8 :", _real)
+print("logit-lens(final)     top8 :", _llf)
+print("TOP-8 SETS MATCH           :", set(_real) == set(_llf), "  <-- must be True")
+print("TOP-8 EXACT ORDER MATCH    :", _real == _llf)
+print(f"max|lens - real| logits    : {_maxdiff:.4g}   <-- expect ~1 bf16 ULP (<=0.25), not exactly 0")
+assert set(_real) == set(_llf), (
+    "logit-lens FAILED check (1): LM_HEAD(hs[-1]) does not match the model's own next token. "
+    "Do NOT trust the logit channel or any Q5 claim -- fix FINAL_NORM / LM_HEAD / indexing first. "
+    "A wrong FINAL_NORM yields plausible-looking garbage, not an error, which is the whole reason "
+    "for this check."
+)
+
+# Check (2): known-answer trajectory over the readout's real path, LM_HEAD(FINAL_NORM(raw residual)).
+# Sampled across ALL_LAYERS because BAND_LAYERS is not calibrated yet; the climb also independently
+# previews where readable content sits -- a free cross-check on Part 1's band.
+print("\nlogit-lens trajectory (' Paris' should climb in the late layers):")
+for _L in list(ALL_LAYERS[::4]) + [ALL_LAYERS[-1]]:
+    _h = _out.hidden_states[_L + 1][0, -1].unsqueeze(0)   # raw residual -> FINAL_NORM IS needed here
+    _t = _decode_ids(LM_HEAD(FINAL_NORM(_h))[0].float().topk(5).indices.tolist())
+    print(f"  layer {_L:2d} (depth {_L/(N_LAYERS-1):.2f}): {_t}")
+""".strip()))
+
+cells.append(md(r"""
 # Part 1 — Band calibration
 
 **The question this answers:** at which depths does this model's residual stream carry
@@ -251,7 +312,9 @@ def calibrate_doc(text):
     for layer in ALL_LAYERS:
         lg = lens_logits[layer].float()                              # [P, vocab]
         kurt[layer]  = float(_kurtosis(lg.cpu().numpy(), axis=-1).mean())
-        agree[layer] = float((lg.argmax(-1) == true_next).float().mean().item())
+        # .cpu() on both sides: lens.apply returns CPU logits while true_next rides on the GPU,
+        # and a cross-device comparison raises. Ranks/argmax are device-invariant, so this is free.
+        agree[layer] = float((lg.argmax(-1).cpu() == true_next.cpu()).float().mean().item())
         if prev is not None:
             cos[layer - 1] = float(
                 torch.nn.functional.cosine_similarity(prev, lg, dim=-1).mean().item()
@@ -314,8 +377,16 @@ agr  = calib_by_layer["next_token_agreement"].values
 lays = calib_by_layer["layer"].values
 
 # Lower edge: first layer where kurtosis reaches 25% of its range (readout has sharpened).
-k_thresh   = k.min() + 0.25 * (k.max() - k.min())
-lower_idx  = int(np.argmax(k >= k_thresh))
+# GUARD against the early-layer artefact: the first few layers carry a high-norm kurtosis SPIKE
+# unrelated to concept content (on gemma-3-4b-it, layer 0 alone sits near the top of the range).
+# Left in, that spike makes "first layer above threshold" fire at layer 0 -- the raw heuristic
+# proposed layer 0 on the 2026-07-21 run, which the Paris logit-lens trajectory shows is
+# uninterpretable. So the onset search AND the range it is measured against both exclude an early
+# guard region (~15% depth). The plots remain the real evidence; a human still confirms the band.
+guard      = max(1, int(0.15 * N_LAYERS))
+k_guard    = k[guard:]
+k_thresh   = k_guard.min() + 0.25 * (k_guard.max() - k_guard.min())
+lower_idx  = guard + int(np.argmax(k_guard >= k_thresh))
 
 # Upper edge: last layer BEFORE next-token agreement reaches 50% of its range (pre-collapse).
 a_thresh    = agr.min() + 0.50 * (agr.max() - agr.min())
@@ -325,7 +396,8 @@ upper_idx   = max(lower_idx, collapse_ix - 1)
 BAND_LAYERS = [int(l) for l in lays[lower_idx:upper_idx + 1]]
 band_frac   = (float(BAND_LAYERS[0] / (N_LAYERS - 1)), float(BAND_LAYERS[-1] / (N_LAYERS - 1)))
 
-print(f"kurtosis onset      layer {lays[lower_idx]}  (depth {band_frac[0]:.2f})")
+print(f"kurtosis onset      layer {lays[lower_idx]}  (depth {band_frac[0]:.2f})   "
+      f"[first {guard} layers guarded out of the onset search]")
 print(f"collapse onset      layer {lays[collapse_ix]}  (depth {lays[collapse_ix]/(N_LAYERS-1):.2f})")
 print(f"\nPROPOSED BAND: layers {BAND_LAYERS[0]}..{BAND_LAYERS[-1]} "
       f"({len(BAND_LAYERS)} layers, depth {band_frac[0]:.2f}-{band_frac[1]:.2f})")

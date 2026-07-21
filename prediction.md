@@ -433,3 +433,38 @@ an intervention, **within reach of this lab**. That is the natural next run, and
 
 `trait_persistence_v2_stimuli.py` self-checks still pass; no trait word leaks into any inferred/control arm; every tracer
 is present in its direct trigger.
+
+### 2026-07-21 — two tracers swapped to single-token forms (Phase 1 tokenizer check)
+
+**Data visible at the time: Phase 1 only (calibration + screening). No Phase 2 / Q2 data exists.**
+Phase 1's Part-2 tokenizer check (`phase1/tokenizer_check.csv`) found three declared tracers are
+**not single-token** in the Gemma tokenizer — `stapler` (Priya), `crowbar` (Elias), `trowel` (Greta) —
+so the single-token tracer machinery cannot measure them, and Q2 cannot run for those characters as
+declared. This is the exact contingency §6/D4 and the notebook already name: *swap and re-register,
+never silently substitute.*
+
+- **Elias:** tracer `crowbar` → **`bucket`**; direct trigger becomes
+  `"Elias is loyal. He sets the bucket down and heads home."`
+- **Greta:** tracer `trowel` → **`mirror`**; direct trigger becomes
+  `"Greta is dishonest. She sets the mirror down and heads home."`
+- **Priya (`stapler`) is left unchanged** — she failed Phase 1 screening and is not in the Phase 2
+  roster, so no swap is owed; recorded here for completeness.
+
+Each replacement is a neutral concrete object with no semantic relation to the character's trait,
+occupation, or scene (D4), of register comparable to the surviving tracers (lantern, kettle, thermos,
+umbrella, canteen, compass, mallet). Only the tracer token and the neutral action clause change; the
+`inferred` and `control` arms are untouched.
+
+**Why this is not a researcher degree of freedom on Q2.** The swap is made *after* Phase 1 screening
+but *before any Q2 data exists*. Tracers do not enter screening (the gate reads only inferred/control
+against the trait lexicon), so the survivor roster could not have informed the word choice, and the
+choice cannot have been tuned to a Q2 result that has not been measured. The words are chosen for
+neutrality, not for any outcome.
+
+**Confirmed 2026-07-21 (same day):** both replacements verified **single-token** in the leading-space
+form on the real `google/gemma-3-4b-it` tokenizer (`tok.encode(" "+w, add_special_tokens=False)`):
+`bucket` → id 24211, `mirror` → id 14701, each a length-1 encoding. (A tiktokenizer pre-check on the
+*gemma-7b* tokenizer had agreed but returned different ids — 24951 / 15978 — confirming Gemma-3 uses a
+distinct tokenizer build, which is why the pre-check was not treated as authoritative.) The swap is now
+fully registered; no follow-up owed. `trait_persistence_v2_stimuli.py` self-checks pass (tracer present
+in its direct trigger; no trait word leaks into inferred/control).

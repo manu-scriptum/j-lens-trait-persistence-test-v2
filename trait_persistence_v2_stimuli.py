@@ -100,9 +100,9 @@ CANDIDATES = [
     },
     {
         "name": "Elias", "trait": "loyal", "valence": "+",
-        "subject": "he", "possessive": "his", "tracer": "crowbar",
+        "subject": "he", "possessive": "his", "tracer": "bucket",  # was "crowbar" (multi-token); see prediction.md §9 2026-07-21
         "opening": f"Elias drives a delivery van out of a yard in {TOWN}.",
-        "direct": "Elias is loyal. He sets the crowbar down and heads home.",
+        "direct": "Elias is loyal. He sets the bucket down and heads home.",
         "inferred": "When the others left the firm for better pay, Elias stayed on through the lean year without once asking what else was out there.",
         "control": "When the others left the firm for better pay, Elias took over their routes and worked out the new schedule for the whole yard.",
     },
@@ -132,9 +132,9 @@ CANDIDATES = [
     },
     {
         "name": "Greta", "trait": "dishonest", "valence": "-",
-        "subject": "she", "possessive": "her", "tracer": "trowel",
+        "subject": "she", "possessive": "her", "tracer": "mirror",  # was "trowel" (multi-token); see prediction.md §9 2026-07-21
         "opening": f"Greta weighs produce at the market scale in {TOWN}.",
-        "direct": "Greta is dishonest. She sets the trowel down and heads home.",
+        "direct": "Greta is dishonest. She sets the mirror down and heads home.",
         "inferred": "Greta leans on the scale when the customer looks away and writes down a weight that was never there.",
         "control": "Greta checks the scale when the customer steps up and writes down the weight the dial settles on.",
     },

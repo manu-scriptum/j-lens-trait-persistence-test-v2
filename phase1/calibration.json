@@ -1,0 +1,33 @@
+{
+  "band_layers": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
+  ],
+  "band_depth_frac": [
+    0.3939393939393939,
+    0.7878787878787878
+  ],
+  "n_layers": 34,
+  "v1_band_depth_frac": [
+    0.35,
+    0.9
+  ],
+  "calib_source": "Salesforce/wikitext wikitext-103-raw-v1 [test]",
+  "n_calib_docs": 20,
+  "skip_first_tokens": 5,
+  "jlens_commit": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+  "model": "google/gemma-3-4b-it",
+  "lens_file": "gemma-3-4b-it/jlens/Salesforce-wikitext/gemma-3-4b-it_jacobian_lens.pt"
+}
