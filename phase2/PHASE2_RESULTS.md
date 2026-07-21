@@ -138,6 +138,47 @@ Whether to spend the run is a judgement call for the researcher.
 - n = 7, single-item medians draggable by one character (Elias demonstrably so); one trait ("loyal")
   behaved as a weak cue and is flagged rather than dropped.
 
+## §7a extension results — distances 15, 20, 30
+
+Ran 2026-07-21 (`trait_persistence_v2_phase2ext.ipynb`, 567 reads), analysed with
+`analyze_phase2ext.py` jointly with the primary sweep across d ∈ {4,7,10,15,20,30}. The extension
+existed to test whether the *absence* of a stated-vs-inferred separation in the primary window was a
+**dynamic-range ceiling** (both arms pinned near the rank floor) rather than a true null.
+
+**Answer: it is a true null. Pushing distance to 30 does not open up a separation.**
+
+Median (robust) ratio-to-control across characters, Cue B, trait lexicon:
+
+| d | direct rank | inf rank | ctrl rank | direct ratio | inf ratio | inf/direct |
+|---|---|---|---|---|---|---|
+| 4 | 7.0 | 11.0 | 229.5 | 0.028 | 0.037 | 1.31× |
+| 7 | 12.5 | 15.5 | 248.0 | 0.040 | 0.030 | 0.74× |
+| 10 | 8.5 | 17.0 | 243.5 | 0.020 | 0.019 | 0.96× |
+| 15 | 11.0 | 25.0 | 204.5 | 0.028 | 0.012 | 0.42× |
+| 20 | 6.5 | 28.5 | 233.5 | 0.015 | 0.013 | 0.86× |
+| 30 | 5.0 | 26.5 | 297.0 | 0.008 | 0.015 | 1.76× |
+
+The `inf/direct` column bounces around 1 with no trend (0.4×–1.8×). Per-character in the extension
+regime (median over d ∈ {15,20,30}), **3/7** characters have direct more retrievable — the *same*
+three as the primary window (Greta, Marek, Maria) — while Nadia, Simon, Bruno lean the other way and
+**Elias is again anomalous** (direct ratio 2.05, worse than the no-trait control). Wilcoxon on the
+long regime: **W+ = 15, p = 0.9375 — does not clear.** The direct-vs-inferred contrast is essentially
+unchanged from the primary window (−0.0022 → −0.0021).
+
+**Two things worth stating plainly:**
+- **The null is not a range artifact.** Control ranks sit at ~200–300 at these distances (ample room),
+  yet direct and inferred stay statistically indistinguishable. The §7a dynamic-range worry is
+  answered and dismissed.
+- **The inferred trait still does not collapse at d = 30** (retrievable for 5/7). Under cued retrieval,
+  an inferred trait remains recoverable ~30 sentences after the behavioural cue — reinforcing the
+  primary headline against v1's one-sentence collapse.
+
+**Method caveat, recorded because it nearly misled us:** the in-notebook preview reported the *mean*
+band-rank (direct ≈ 28–35, inferred ≈ 96–104), which looked like a 3× separation. That was outlier
+inflation of a right-skewed rank distribution (chiefly Elias). The frozen §3 measure is the
+*per-character median ratio*, on which the separation vanishes. Mean-of-ranks is not the registered
+statistic, and this is why.
+
 ## Files
 
 | file | what it is |
@@ -147,4 +188,6 @@ Whether to spend the run is a judgement call for the researcher.
 | `phase2_top20.csv` | top-20 J-lens vocabulary at every checkpoint |
 | `phase2_reintro.csv` | D3 reintroduction continuations (qualitative) |
 | `phase2_logit_posctrl.csv` | per-character logit positive control (3/7 passed) |
-| `../analyze_phase2.py` | the analysis that produced this document |
+| `phase2ext_*.csv` | the §7a extension sweep (d ∈ {15,20,30}); same schema as the primary set |
+| `../analyze_phase2.py` | the primary-sweep analysis |
+| `../analyze_phase2ext.py` | the combined primary + extension trend analysis |
