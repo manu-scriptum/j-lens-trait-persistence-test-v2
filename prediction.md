@@ -767,5 +767,27 @@ keywords after seeing which ones the model says would tune the stimulus to the o
 position-agnostic secondary gate addresses the same problem without touching the pre-registered word
 lists. The roster is likewise not back-filled and the underpowered characters are not replaced.
 
+**5. Two instrument checks added (verification, not criteria).** Phase 3 verified the mask one
+mechanical way — attention mass landing on the masked span is ~0. That leaves two ways an activation
+intervention can silently lie, both now checked before any Phase 3b result is trusted:
+
+- **Null-mask identity.** The hook clones and replaces the attention mask on every call, so it must be
+  proven *inert* when it masks nothing. Registering the hooks with an empty span (`force=True`, which
+  deliberately bypasses the `if cols:` shortcut) must reproduce the unhooked logits **bit-identically**.
+  Hard assert: a hook that perturbs the model independently of what it masks would confound every read.
+- **Total-mask degradation.** Masking the *entire story* (sparing position 0 as an attention sink, since
+  an all-masked softmax row yields NaN rather than a measurement) must visibly wreck the trait read.
+  Hard assert that it degrades at all, with a loud warning below ×5. This excludes "the mask fires but
+  has no real effect, and the collapse came from elsewhere."
+
+Together with the semantic severance gate these cover the four ways this intervention could mislead:
+not firing, firing inertly, firing without teeth, or severing the wrong thing. **Neither check touches a
+decision rule** — they gate whether the run is trustworthy at all, not what any verdict is.
+
+*Provenance note:* these two were added after a README draft claimed verification the project had not
+actually performed. The claim was corrected to what Phase 3 did; the checks were then added so the
+stronger claim becomes true by doing the work rather than by wording. They are registered here **before
+Phase 3b runs**, and the README will not assert them until they have passed.
+
 Build artifacts: `build_phase3b.py` → `trait_persistence_v2_phase3b.ipynb`, analysed by
 `analyze_phase3b.py`. Outputs are `phase3b_*` so they never collide with Phase 3's.

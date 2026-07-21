@@ -216,9 +216,11 @@ def _mask_hook(cols):
 
 
 @contextlib.contextmanager
-def ablate(cols):
+def ablate(cols, force=False):
+    '''Mask attention toward key positions `cols`. `force=True` registers the hooks even when `cols`
+    is empty — used by the null-mask identity check to exercise the hook machinery itself.'''
     handles = []
-    if cols:
+    if cols or force:
         h = _mask_hook(cols)
         for blk in DECODER_LAYERS:
             handles.append(blk.self_attn.register_forward_pre_hook(h, with_kwargs=True))
@@ -414,6 +416,69 @@ print(f"max attention to scene columns — baseline: {_base:.4f}   masked: {_mas
 assert _masked < 1e-6, f"MASK DID NOT TAKE ({_masked:.2e}). Do not trust any ablation read."
 print("mechanistic mask check PASSED.")
 print("(Phase 3 recorded baseline 0.9453 / masked 0.00 — this should reproduce closely.)")
+""".strip()))
+
+cells.append(md(r"""
+### Two more instrument checks — closing the remaining ways the ablation could be silently wrong
+
+The attention-mass check above proves the mask *removes* attention. Two failure modes it does not
+cover, added here:
+
+1. **Null-mask identity** — a hook that perturbs the model even when it masks nothing. The hook clones
+   and replaces the attention mask on every call, so it must be proven **inert** when handed an empty
+   span. Registering the hooks with `force=True` and an empty column set must reproduce the unhooked
+   logits **bit-identically**. (This deliberately exercises the hook machinery, rather than the
+   `if cols:` shortcut that skips registration.)
+2. **Total-mask degradation** — a hook that fires but has no real effect, so that any observed collapse
+   came from somewhere else. Masking the *entire story* must visibly wreck the trait read. Position 0 is
+   spared as an attention sink: if every key a query may attend to were masked, its softmax row would be
+   all −∞ and produce NaN rather than a measurement.
+
+Together with the semantic gate, these cover the four ways this intervention could lie: not firing,
+firing inertly, firing without teeth, or severing the wrong thing.
+""".strip()))
+
+cells.append(code(r"""
+# --- 1. NULL-MASK IDENTITY: hooks registered, nothing masked -> must be bit-identical ------------
+_enc0 = tokenizer(_txt, return_tensors="pt").to(hf_model.device)
+with torch.no_grad():
+    _plain = hf_model(**_enc0).logits
+with ablate([], force=True):                      # hooks ACTIVE, empty span
+    with torch.no_grad():
+        _null = hf_model(**_enc0).logits
+_identical = torch.equal(_plain, _null)
+_maxdiff = (_plain - _null).abs().max().item()
+print(f"null-mask identity: bit-identical = {_identical}   max|diff| = {_maxdiff:.3e}")
+assert _identical, (
+    "NULL-MASK IDENTITY FAILED: registering the hook with an empty span changed the logits. The hook "
+    "perturbs the model independently of what it masks, so every ablation read is confounded. Fix first."
+)
+print("  -> the hook is inert when it masks nothing.")
+
+# --- 2. TOTAL-MASK DEGRADATION: mask the whole story -> the trait read must be wrecked ------------
+_prefix_n = tokenizer(S.build_prefix(_c, "inferred", DECISION_D),
+                      return_tensors="pt")["input_ids"].shape[1]
+_all_story = list(range(1, _prefix_n))             # spare position 0 as an attention sink (avoids NaN)
+_trait_ids = CHAR_GROUPS["Maria"]["trait"]
+_posB = [tokenizer(_txt, return_tensors="pt")["input_ids"].shape[1] - 1]
+
+_r_base, _ = read_probe(_txt, _posB, {"trait": _trait_ids})
+with ablate(_all_story):
+    _r_tot, _ = read_probe(_txt, _posB, {"trait": _trait_ids})
+_b, _t = _r_base["trait"]["j_median"], _r_tot["trait"]["j_median"]
+_factor = _t / _b if _b else float("inf")
+print(f"total-mask degradation: trait rank {_b:.1f} -> {_t:.1f}  (x{_factor:.1f}, {len(_all_story)} tokens masked)")
+assert _t > _b, (
+    "TOTAL-MASK DEGRADATION FAILED: masking the entire story did not worsen the trait read at all. "
+    "The mask fires but has no effect; any collapse measured below came from something else."
+)
+if _factor < 5:
+    print(f"  ** WARNING: only x{_factor:.1f} degradation from masking the whole story. The mask has "
+          f"less bite than expected — treat the ablation results with suspicion and investigate. **")
+else:
+    print("  -> the mask has teeth.")
+print("\nfour instrument checks passed: attention removed, hook inert when empty, mask has teeth, "
+      "and the semantic severance gate runs during the sweep.")
 """.strip()))
 
 cells.append(md(r"""
